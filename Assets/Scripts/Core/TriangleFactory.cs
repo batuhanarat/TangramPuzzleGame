@@ -18,15 +18,15 @@ public class TriangleFactory : MonoBehaviour
         }
     }
 
-    public Triangle GetTriangleFromType(TriangleType type)
+    public Triangle GetTriangleFromType(TriangleType type, Vector3 position)
     {
         return type switch
         {
-            TriangleType.LEFT => Instantiate(triangleConfig.leftTrianglePrefab, TriangleRoot).GetComponent<Triangle>(),
-            TriangleType.RIGHT => Instantiate(triangleConfig.rightTrianglePrefab, TriangleRoot).GetComponent<Triangle>(),
-            TriangleType.UP => Instantiate(triangleConfig.upperTrianglePrefab, TriangleRoot).GetComponent<Triangle>(),
-            TriangleType.DOWN => Instantiate(triangleConfig.bellowTrianglePrefab, TriangleRoot).GetComponent<Triangle>(),
-            _ =>  Instantiate(triangleConfig.upperTrianglePrefab, TriangleRoot).GetComponent<Triangle>()
+            TriangleType.LEFT => Instantiate(triangleConfig.leftTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>(),
+            TriangleType.RIGHT => Instantiate(triangleConfig.rightTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>(),
+            TriangleType.UP => Instantiate(triangleConfig.upperTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>(),
+            TriangleType.DOWN => Instantiate(triangleConfig.bellowTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>(),
+            _ =>  Instantiate(triangleConfig.upperTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>()
         };
     }
 }

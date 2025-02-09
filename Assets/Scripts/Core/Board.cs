@@ -2,32 +2,27 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board : MonoBehaviour
+public class Board
 {
     [SerializeField] private SpriteRenderer GridRenderer;
     public static Board Instance;
-    private  Block[,] blocks;
+    private Block[,] blocks;
     private int _columns;
     private int _rows;
     public List<Triangle> availableTriangles = new();
     private readonly Color[] AllColors = {Color.blue, Color.green, Color.red, Color.magenta, Color.yellow, Color.grey};
     private Color[] _choosenColors;
 
-    void Awake()
+    public Board(int col, int row, int seed, int pieceCount)
     {
-        Instance = this;
-    }
-    public void Start()
-    {
-        Init(3,3);
-        CreateTangram(0,3);
+        Init(col,row);
+        CreateTangram(seed,pieceCount);
     }
 
     public Triangle GetRandomTriangle()
     {
         var randomIndex = UnityEngine.Random.Range(0,availableTriangles.Count);
         return availableTriangles[randomIndex];
-
     }
 
     public void Init(int columns, int rows)
@@ -101,8 +96,6 @@ public class Board : MonoBehaviour
 
         for(int i = 0 ; i < pieceCount ; i++) {
             _choosenColors[i] = AllColors[i];
-
-
 
             GameObject pieceGO = new("Piece");
             var piece =  pieceGO.AddComponent<Piece>();
