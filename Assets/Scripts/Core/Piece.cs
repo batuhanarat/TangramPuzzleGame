@@ -24,6 +24,7 @@ public class Piece : MonoBehaviour
         {
             firstTriangle.transform.parent = this.transform;
         }
+
         TryProgress();
     }
 
@@ -63,7 +64,6 @@ public class Piece : MonoBehaviour
             if (triangletoCapture.transform != null && this.transform != null)
             {
                 triangletoCapture.transform.parent = this.transform;
-                return false;
             }
                 return true;
             }
