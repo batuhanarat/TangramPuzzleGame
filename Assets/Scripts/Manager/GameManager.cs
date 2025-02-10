@@ -25,12 +25,11 @@ public class GameManager : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePosition.z = 0f; // Ensure we're in the 2D plane
+            mousePosition.z = 0f;
 
             Block clickedBlock;
             if (boardRenderer.GetBlockFromPosition(mousePosition, out clickedBlock))
             {
-                // Handle valid block click
                 Debug.Log($"Clicked block at position: {clickedBlock.Position}");
             }
         }

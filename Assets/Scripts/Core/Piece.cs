@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
@@ -11,11 +12,11 @@ public class Piece : MonoBehaviour
     private int _sortingOrder;
     public Vector3 Position { get => transform.position; }
 
+    public bool IsOnTheBoard = false;
+
     public void OnMouseDown()
     {
-                Debug.Log("BU PİECE E TIKLANDI ");
         var coord = unitTriangles[0].GetCoord();
-        Debug.Log("BU PİECE E TIKLANDI " + coord.x +" :" + coord.y);
     }
     public void Init(Triangle firstTriangle, Color color)
     {
@@ -34,30 +35,30 @@ public class Piece : MonoBehaviour
 
         TryProgress();
     }
+    public void RemoveFromBoard()
+    {
+        foreach(var unit in unitTriangles)
+        {
+            unit.ExtractFromBoard();
+        }
+        IsOnTheBoard = false;
+    }
 
     public bool TryPlace()
     {
         foreach(var triangle in unitTriangles)
         {
-
-            // Her bir triangle için,
-            // pozisyonu hangi bloğa denk geliyor ona bakmalı
-            // eğer bulunduğu bloktaki o typeda başka bir triangle yok ise yani occupied değilse -> testi geçti
-            // true döndür  ->
-            // eğer herhangi biri false döndürürse koymayı iptal et
-
             if(!triangle.CanPlace())
             {
                 return false;
             }
-
-
         }
 
-        //notifyalltrianglestoplaced();
         foreach(var triangle in unitTriangles) {
             triangle.PlaceToBlock();
         }
+
+        IsOnTheBoard = true;
         return true;
 
     }

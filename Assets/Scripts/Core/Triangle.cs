@@ -50,17 +50,32 @@ public class Triangle : MonoBehaviour
         mousePositionOnInputFinishedWithOffset = mousePosition + _offset;
         mousePositionOnInputFinished = mousePosition;
 
+        if(_piece.IsOnTheBoard)
+        {
+            _piece.RemoveFromBoard();
+        }
+
         if(_piece.TryPlace()) {
             SetSortingOrder(Board.Instance.InPlacedSortingOrder);
         } else{
             SetSortingOrder(InitialSortingOrder);
         }
     }
+    public void ExtractFromBoard()
+    {
+        blockToPlace.RemoveFromBlock(this);
+    }
+
 
     public bool CanPlace()
     {
 
-        if(!BoardRenderer.Instance.GetBlockFromPosition(mousePositionOnInputFinished, out Block block))  return false ;
+        if(!BoardRenderer.Instance.GetBlockFromPosition(transform.position, out Block block))
+        {
+            Debug.Log(Type + "could not find any block in CanPlace function ");
+            return false ;
+
+        }
 
         if (block.TryAddToBlock(this) ) {
         blockToPlace = block;
@@ -72,11 +87,17 @@ public class Triangle : MonoBehaviour
 
     }
 
+    public void ExtractFromBlock()
+    {
+
+    }
+
     public void PlaceToBlock()
     {
         if(blockToPlace != null)
         {
             transform.position = blockToPlace.Position;
+            Debug.Log("PLACED");
         }
     }
 

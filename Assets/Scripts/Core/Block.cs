@@ -49,6 +49,31 @@ public class Block
         Board.Instance.availableTriangles.Add(triangle);
         return triangle;
     }
+    public void RemoveFromBlock(Triangle triangle)
+    {
+        switch(triangle.Type)
+        {
+            case TriangleType.LEFT:
+                    IsLeftTriangleOccuppied = false;
+                    break;
+
+            case TriangleType.RIGHT:
+                    IsRightTriangleOccuppied = false;
+                    break;
+
+            case TriangleType.UP:
+                    IsUpperTriangleOccuppied = false;
+                    break;
+
+            case TriangleType.DOWN:
+                    IsLowerTriangleOccuppied = false;
+                    break;
+
+            default:
+            break;
+        }
+
+    }
 
     public bool TryAddToBlock(Triangle triangle)
     {

@@ -71,7 +71,6 @@ public class BoardRenderer : MonoBehaviour
         }
     }
 
-
     private void ScaleCellToSize(GameObject cell, float targetSize)
     {
         SpriteRenderer cellSprite = cell.GetComponent<SpriteRenderer>();
