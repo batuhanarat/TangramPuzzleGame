@@ -3,7 +3,8 @@ using UnityEngine;
 public class BoardRenderer : MonoBehaviour
 {
     [Header("Board Settings")]
-    public GameObject trianglePrefab;
+
+    public static BoardRenderer Instance;
     private int _gridSize;
     public float widthPercentage = 0.8f;
     public float heightPercentage = 0.4f;
@@ -12,14 +13,25 @@ public class BoardRenderer : MonoBehaviour
     public float CellSize { get; private set; }
     public Vector3 BoardCenter { get; private set; }
 
-
-    public void AdjustBoard(int columns, int rows)
+    private void Awake()
     {
-        _gridSize = columns;
-        InitializeBoard();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
     }
 
-    private void InitializeBoard()
+    public void AdjustBoard(int columns, int rows, Block[,] blocks)
+    {
+        _gridSize = columns;
+        InitializeBoard(columns, rows, blocks);
+    }
+
+
+    private void InitializeBoard(int columns, int rows, Block[,] blocks)
     {
         Camera mainCamera = Camera.main;
         float screenHeight = 2f * mainCamera.orthographicSize;
@@ -44,7 +56,18 @@ public class BoardRenderer : MonoBehaviour
 
         float innerArea = boardSize * 0.96f;
         CellSize = innerArea / _gridSize;
+
+        for(int col = 0; col < columns ; col++ )
+        {
+            for(int row = 0 ; row < rows ; row++)
+            {
+                var block = new Block(col, row, BoardCenter, CellSize, _gridSize );
+                blocks[col,row] = block;
+
+            }
+        }
     }
+
 
     private void ScaleCellToSize(GameObject cell, float targetSize)
     {

@@ -9,7 +9,11 @@ public class TriangleFactory : MonoBehaviour
 
     public void Awake()
     {
-        triangleConfig = Resources.Load<TriangleConfig>("ScriptableObjects/TriangleConfigSO");
+        triangleConfig = Resources.Load<TriangleConfig>("ScriptableObjects/TriangleConfig");
+        if(triangleConfig == null)
+        {
+            Debug.LogWarning("boş");
+        }
 
         if(Instance != null && Instance != this ) {
             Destroy(gameObject);

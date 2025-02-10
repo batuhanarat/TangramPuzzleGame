@@ -10,7 +10,9 @@ public class Triangle : MonoBehaviour
     private List<Triangle> _neighbors = new();
     private int X;
     private int Y;
-    private bool isOccupied = false;
+    private bool _isOccupied = false;
+
+    public bool IsAvailableToCapture  => !_isOccupied ;
 
     public void Init(int x, int y)
     {
@@ -19,6 +21,7 @@ public class Triangle : MonoBehaviour
     }
     public void ChangeColor(Color color)
     {
+        _isOccupied = true;
         TriangleRenderer.color = color;
     }
 
@@ -26,10 +29,10 @@ public class Triangle : MonoBehaviour
     {
         if(tri3 != null )
         {
-            _neighbors.Append(tri3);
+            _neighbors.Add(tri3);
         }
-        _neighbors.Append(tri1);
-        _neighbors.Append(tri2);
+        _neighbors.Add(tri1);
+        _neighbors.Add(tri2);
     }
 
     public List<Triangle> GetAllNeighbors()

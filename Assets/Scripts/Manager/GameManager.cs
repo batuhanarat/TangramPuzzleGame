@@ -14,9 +14,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        board = new Board(columns, rows, seed, pieceCount);
         boardRenderer = Instantiate(BoardPrefab).GetComponent<BoardRenderer>();
-        boardRenderer.AdjustBoard(columns,rows);
-
+        board = Board.Instance;
+        board.Init(columns,rows);
+        board.CreateTangram(seed,pieceCount);
     }
 }

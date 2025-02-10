@@ -5,18 +5,37 @@ using UnityEngine;
 public class Board
 {
     [SerializeField] private SpriteRenderer GridRenderer;
-    public static Board Instance;
+    private static Board _instance;
+
+    public static Board Instance {
+        get
+    {
+            if (_instance == null)
+            {
+                _instance = new Board();
+            }
+            return _instance;
+        }
+
+
+    }
+
+
+
     private Block[,] blocks;
     private int _columns;
     private int _rows;
     public List<Triangle> availableTriangles = new();
     private readonly Color[] AllColors = {Color.blue, Color.green, Color.red, Color.magenta, Color.yellow, Color.grey};
     private Color[] _choosenColors;
+    private List<Piece> pieces = new();
 
-    public Board(int col, int row, int seed, int pieceCount)
+
+
+    private Board()
     {
-        Init(col,row);
-        CreateTangram(seed,pieceCount);
+       // Init(col,row);
+        //CreateTangram(seed,pieceCount);
     }
 
     public Triangle GetRandomTriangle()
@@ -31,14 +50,7 @@ public class Board
         _rows = rows;
         blocks = new Block[columns,rows];
 
-        for(int col = 0; col < columns ; col++ )
-        {
-            for(int row = 0 ; row < rows ; row++)
-            {
-                var block = new Block(col,row);
-                blocks[col,row] = block;
-            }
-        }
+        BoardRenderer.Instance.AdjustBoard(columns, rows, blocks);
 
         foreach(var block in blocks)
         {
@@ -91,49 +103,42 @@ public class Board
         UnityEngine.Random.InitState(seed);
         _choosenColors = new Color[pieceCount];
 
-        ShuffleArray(AllColors);
+        //ShuffleArray(AllColors);
+
+        Debug.Log("müsait üçgen sayısı: " + availableTriangles.Count);
 
 
         for(int i = 0 ; i < pieceCount ; i++) {
             _choosenColors[i] = AllColors[i];
 
             GameObject pieceGO = new("Piece");
-            var piece =  pieceGO.AddComponent<Piece>();
+            var piece = pieceGO.AddComponent<Piece>();
 
             Triangle triangle = GetRandomTriangle();
             piece.Init(triangle, _choosenColors[i]);
+            pieces.Add(piece);
         }
 
-        /* Dictionary<Color , int> keyValuePairs = new();
 
 
-        Dictionary<Color, string> colorNames = new Dictionary<Color, string>
+        bool isCreating = true;
+        while (isCreating)
         {
-            { Color.blue, "Blue" },
-            { Color.green, "Green" },
-            { Color.red, "Red" },
-            { Color.magenta, "Magenta" },
-            { Color.yellow, "Yellow" },
-            { Color.grey, "Grey" }
-        };
+            for (int i = pieces.Count - 1; i >= 0; i--)
+            {
+                if(!pieces[i].TryProgress())
+                {
+                        pieces.RemoveAt(i);
 
-
-        for(int i = 0 ; i < 100 ; i++)
-        {
-            int colorIndex = Random.Range(0,5);
-            if(!keyValuePairs.ContainsKey(colors[colorIndex]) )  {
-                keyValuePairs.Add(colors[colorIndex],1);
-            } else {
-                keyValuePairs[colors[colorIndex]]++;
+                        if (pieces.Count == 0)
+                        {
+                            isCreating = false;
+                            Debug.Log("All pieces are created");
+                            break;
+                        }
+                }
             }
         }
-
-        foreach(var element in keyValuePairs) {
-            Debug.Log(colorNames[element.Key] +" : " + element.Value);
-        }
-        */
-
     }
 
-
-}
+    }

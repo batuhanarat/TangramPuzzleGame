@@ -1,5 +1,3 @@
-
-using System.Numerics;
 using UnityEngine;
 
 public class Block
@@ -35,7 +33,6 @@ public class Block
 
     private Triangle CreateTriangle(TriangleType type, UnityEngine.Vector3 position, float cellSize)
     {
-
         Triangle triangle = TriangleFactory.Instance.GetTriangleFromType(type, position);
 
         SpriteRenderer sr = triangle.GetComponent<SpriteRenderer>();
@@ -44,7 +41,6 @@ public class Block
 
         triangle.Init(X, Y);
         Board.Instance.availableTriangles.Add(triangle);
-
         return triangle;
     }
 
@@ -76,26 +72,26 @@ public class Block
 
 
 
-        Triangle rightTriangle1;
-        if(Board.Instance.GetLeftBlock(X,Y) != null)
-        {
-            rightTriangle1 =   Board.Instance.GetLeftBlock(X,Y).RightTriangle;
-        } else {
-            rightTriangle1  = null;
-        }
-        RightTriangle.SetNeighbors(UpperTriangle, LowerTriangle, rightTriangle1 );
-
-
-
-
         Triangle leftTriangle1;
         if(Board.Instance.GetRightBlock(X,Y) != null)
         {
-            leftTriangle1 =  Board.Instance.GetRightBlock(X,Y).LeftTriangle ;
+            leftTriangle1 =   Board.Instance.GetRightBlock(X,Y).LeftTriangle;
         } else {
             leftTriangle1  = null;
         }
-        LeftTriangle.SetNeighbors(UpperTriangle, LowerTriangle, leftTriangle1);
+        RightTriangle.SetNeighbors(UpperTriangle, LowerTriangle, leftTriangle1 );
+
+
+
+
+        Triangle rightTriangle1;
+        if(Board.Instance.GetLeftBlock(X,Y) != null)
+        {
+            rightTriangle1 =  Board.Instance.GetLeftBlock(X,Y).RightTriangle ;
+        } else {
+            rightTriangle1  = null;
+        }
+        LeftTriangle.SetNeighbors(UpperTriangle, LowerTriangle, rightTriangle1);
 
 
 
