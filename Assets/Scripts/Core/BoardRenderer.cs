@@ -6,9 +6,9 @@ public class BoardRenderer : MonoBehaviour
 
     public static BoardRenderer Instance;
     private int _gridSize;
-    public float widthPercentage = 0.8f;
-    public float heightPercentage = 0.4f;
-    public float topOffsetPercentage = 0.2f;
+    private float widthPercentage = 0.8f;
+    private float heightPercentage = 0.4f;
+    private float topOffsetPercentage = 0.1f;
 
     public float CellSize { get; private set; }
     public Vector3 BoardCenter { get; private set; }

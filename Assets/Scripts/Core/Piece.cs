@@ -8,8 +8,15 @@ public class Piece : MonoBehaviour
     private Color pieceColor;
     private List<Triangle> unitTriangles;
     private List<Triangle> moveableTriangles = new();
+    private int _sortingOrder;
+    public Vector3 Position { get => transform.position; }
 
-
+    public void OnMouseDown()
+    {
+                Debug.Log("BU PİECE E TIKLANDI ");
+        var coord = unitTriangles[0].GetCoord();
+        Debug.Log("BU PİECE E TIKLANDI " + coord.x +" :" + coord.y);
+    }
     public void Init(Triangle firstTriangle, Color color)
     {
         this.pieceColor = color;
@@ -17,7 +24,7 @@ public class Piece : MonoBehaviour
         {
             firstTriangle
         };
-        firstTriangle.ChangeColor(color);
+        firstTriangle.ChangeColor(color,this);
         Board.Instance.availableTriangles.Remove(firstTriangle);
 
         if (firstTriangle.transform != null && this.transform != null)
@@ -59,7 +66,7 @@ public class Piece : MonoBehaviour
             var triangletoCapture = moveableTriangles[index];
 
             unitTriangles.Add(triangletoCapture);
-            triangletoCapture.ChangeColor(pieceColor);
+            triangletoCapture.ChangeColor(pieceColor,this);
             Board.Instance.availableTriangles.Remove(triangletoCapture);
             if (triangletoCapture.transform != null && this.transform != null)
             {
@@ -69,6 +76,15 @@ public class Piece : MonoBehaviour
             }
     }
 
+    public void SetSortingOrder(int order)
+    {
+        _sortingOrder = order;
+        foreach(var unit in unitTriangles)
+        {
+            unit.SetSortingOrder(order);
+        }
+    }
+
     private IEnumerator CaptureCoroutine(Action<bool> callback)
     {
         yield return new WaitForSeconds(1f);
@@ -76,9 +92,14 @@ public class Piece : MonoBehaviour
         var triangletoCapture = moveableTriangles[index];
 
         unitTriangles.Add(triangletoCapture);
-        triangletoCapture.ChangeColor(pieceColor);
+        triangletoCapture.ChangeColor(pieceColor,this);
         Board.Instance.availableTriangles.Remove(triangletoCapture);
         callback(true);
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        transform.position = position;
     }
 
 

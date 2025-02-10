@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Board
@@ -17,10 +19,7 @@ public class Board
             return _instance;
         }
 
-
     }
-
-
 
     private Block[,] blocks;
     private int _columns;
@@ -28,14 +27,11 @@ public class Board
     public List<Triangle> availableTriangles = new();
     private readonly Color[] AllColors = {Color.blue, Color.green, Color.red, Color.magenta, Color.yellow, Color.grey};
     private Color[] _choosenColors;
-    private List<Piece> pieces = new();
-
+    private List<Piece> activePieces = new();
 
 
     private Board()
     {
-       // Init(col,row);
-        //CreateTangram(seed,pieceCount);
     }
 
     public Triangle GetRandomTriangle()
@@ -105,10 +101,8 @@ public class Board
 
         //ShuffleArray(AllColors);
 
-        Debug.Log("müsait üçgen sayısı: " + availableTriangles.Count);
-
-
-        for(int i = 0 ; i < pieceCount ; i++) {
+        for (int i = 0; i < pieceCount; i++)
+        {
             _choosenColors[i] = AllColors[i];
 
             GameObject pieceGO = new("Piece");
@@ -116,29 +110,39 @@ public class Board
 
             Triangle triangle = GetRandomTriangle();
             piece.Init(triangle, _choosenColors[i]);
-            pieces.Add(piece);
+            activePieces.Add(piece);
         }
-
-
+        List<Piece> pieces = activePieces.ToList();
 
         bool isCreating = true;
         while (isCreating)
         {
             for (int i = pieces.Count - 1; i >= 0; i--)
             {
-                if(!pieces[i].TryProgress())
+                if (!pieces[i].TryProgress())
                 {
-                        pieces.RemoveAt(i);
+                    pieces.RemoveAt(i);
 
-                        if (pieces.Count == 0)
-                        {
-                            isCreating = false;
-                            Debug.Log("All pieces are created");
-                            break;
-                        }
+                    if (pieces.Count == 0)
+                    {
+                        isCreating = false;
+                        Debug.Log("All pieces are created");
+                        break;
+                    }
                 }
             }
         }
-    }
+        Debug.Log("pieces " + activePieces.Count);
+        ArrangeSortingOrders();
 
     }
+
+    private void ArrangeSortingOrders()
+    {
+        for (int i = 0; i < activePieces.Count; i++)
+        {
+            Debug.Log("setting sorting order for piece" + i);
+            activePieces[i].SetSortingOrder(i);
+        }
+    }
+}
