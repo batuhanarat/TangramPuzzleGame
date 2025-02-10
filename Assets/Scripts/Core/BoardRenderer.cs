@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardRenderer : MonoBehaviour
@@ -12,6 +13,7 @@ public class BoardRenderer : MonoBehaviour
 
     public float CellSize { get; private set; }
     public Vector3 BoardCenter { get; private set; }
+    private Block[,] _blocks;
 
     private void Awake()
     {
@@ -27,6 +29,7 @@ public class BoardRenderer : MonoBehaviour
     public void AdjustBoard(int columns, int rows, Block[,] blocks)
     {
         _gridSize = columns;
+        _blocks = blocks;
         InitializeBoard(columns, rows, blocks);
     }
 
@@ -74,8 +77,27 @@ public class BoardRenderer : MonoBehaviour
         SpriteRenderer cellSprite = cell.GetComponent<SpriteRenderer>();
         if (cellSprite != null && cellSprite.sprite != null)
         {
-            float originalCellSize = cellSprite.sprite.bounds.size.x; // Hücre sprite'ının orijinal boyutu
+            float originalCellSize = cellSprite.sprite.bounds.size.x;
             cell.transform.localScale = Vector3.one * (targetSize / originalCellSize);
         }
+    }
+    public bool GetBlockFromPosition(Vector3 worldPosition, out Block block)
+    {
+        Vector3 localPosition = worldPosition - BoardCenter;
+
+        float gridOffset = (CellSize * (_gridSize - 1) / 2f);
+
+        int col = Mathf.RoundToInt((localPosition.x + gridOffset) / CellSize);
+        int row = Mathf.RoundToInt((localPosition.y + gridOffset) / CellSize);
+
+        if (col < 0 || col >= _gridSize || row < 0 || row >= _gridSize)
+        {
+            block = default;
+            Debug.Log($"Invalid block position: ({col}, {row}) from world pos: {worldPosition}");
+            return false;
+        }
+
+        block = _blocks[col, row];
+        return true;
     }
 }

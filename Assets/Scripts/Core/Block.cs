@@ -4,12 +4,19 @@ public class Block
 {
     private readonly int X;
     private readonly int Y;
-    private readonly UnityEngine.Vector3 Position;
+    public UnityEngine.Vector3 Position;
+    public Vector2Int Coordinates { get => new Vector2Int(X,Y); }
 
     public Triangle UpperTriangle { get; private set; }
     public Triangle LowerTriangle { get; private set; }
     public Triangle RightTriangle { get; private set; }
     public Triangle LeftTriangle { get; private set; }
+
+    public bool IsLeftTriangleOccuppied { get; private set; }
+    public bool IsRightTriangleOccuppied { get; private set; }
+    public bool IsUpperTriangleOccuppied { get; private set; }
+    public bool IsLowerTriangleOccuppied { get; private set; }
+
 
     public Block(int x, int y, UnityEngine.Vector3 boardCenter, float cellSize, int gridSize)
     {
@@ -27,7 +34,6 @@ public class Block
         LowerTriangle = CreateTriangle(TriangleType.DOWN, Position, cellSize);
         RightTriangle = CreateTriangle(TriangleType.RIGHT, Position, cellSize);
         LeftTriangle = CreateTriangle(TriangleType.LEFT, Position, cellSize);
-
     }
 
 
@@ -44,6 +50,61 @@ public class Block
         return triangle;
     }
 
+    public bool TryAddToBlock(Triangle triangle)
+    {
+        switch(triangle.Type)
+        {
+            case TriangleType.LEFT:
+
+                if(!IsLeftTriangleOccuppied){
+
+                    IsLeftTriangleOccuppied = true;
+                    return true;
+
+                } else {
+                    return false;
+                }
+
+            case TriangleType.RIGHT:
+
+                if(!IsRightTriangleOccuppied){
+
+                        IsRightTriangleOccuppied = true;
+                        return true;
+
+                    } else {
+                        return false;
+                    }
+
+            case TriangleType.UP:
+
+                if(!IsUpperTriangleOccuppied){
+
+                    IsUpperTriangleOccuppied = true;
+                    return true;
+
+                } else {
+                    return false;
+                }
+
+            case TriangleType.DOWN:
+
+                if(!IsLowerTriangleOccuppied){
+
+                    IsLowerTriangleOccuppied = true;
+                    return true;
+
+                } else {
+                    return false;
+                }
+
+            default:
+            break;
+        }
+        return false;
+
+    }
+
     public void InitBlock()
     {
         Triangle bellowTriangle1;
@@ -54,8 +115,6 @@ public class Block
             bellowTriangle1  = null;
         }
         UpperTriangle.SetNeighbors(LeftTriangle, RightTriangle, bellowTriangle1 );
-
-
 
 
 

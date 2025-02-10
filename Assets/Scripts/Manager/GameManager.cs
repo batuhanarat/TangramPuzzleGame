@@ -19,4 +19,27 @@ public class GameManager : MonoBehaviour
         board.Init(columns,rows);
         board.CreateTangram(seed,pieceCount);
     }
+
+    void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePosition.z = 0f; // Ensure we're in the 2D plane
+
+            Block clickedBlock;
+            if (boardRenderer.GetBlockFromPosition(mousePosition, out clickedBlock))
+            {
+                // Handle valid block click
+                Debug.Log($"Clicked block at position: {clickedBlock.Position}");
+            }
+        }
+        if(Input.GetKeyDown(KeyCode.H))
+        {
+            foreach(var block in board.GetBlocks())
+            {
+                Debug.Log("Block in " +block.Coordinates.x +" , " +block.Coordinates.y + "is at position " + block.Position ) ;
+            }
+        }
+    }
 }

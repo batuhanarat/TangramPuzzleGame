@@ -1,20 +1,26 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Triangle : MonoBehaviour
 {
     [SerializeField] private TriangleType TriangleType;
+
+    public TriangleType Type { get => TriangleType; }
     [SerializeField] private SpriteRenderer TriangleRenderer;
 
     private List<Triangle> _neighbors = new();
     private int X;
     private int Y;
     private bool _isOccupied = false;
-    public int sortingOrder;
+    public int InitialSortingOrder;
     private Vector3 _offset;
+    private Vector3 mousePositionOnInputFinishedWithOffset;
+    private Vector3 mousePositionOnInputFinished;
+    private Vector3 mousePosition ;
     private bool _isDragging = false;
-   [SerializeField] private Piece _piece;
+    private Block blockToPlace;
+    [SerializeField] private Piece _piece;
 
     public bool IsAvailableToCapture  => !_isOccupied ;
 
@@ -22,7 +28,7 @@ public class Triangle : MonoBehaviour
     public void OnMouseDown()
     {
         if (_piece == null) return;
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
         _offset = _piece.transform.position - mousePosition;
 
@@ -33,7 +39,7 @@ public class Triangle : MonoBehaviour
     {
         if (_piece == null || !_isDragging) return;
 
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
         _piece.SetPosition(mousePosition + _offset);
 
@@ -41,6 +47,37 @@ public class Triangle : MonoBehaviour
     public void OnMouseUp()
     {
         _isDragging = false;
+        mousePositionOnInputFinishedWithOffset = mousePosition + _offset;
+        mousePositionOnInputFinished = mousePosition;
+
+        if(_piece.TryPlace()) {
+            SetSortingOrder(Board.Instance.InPlacedSortingOrder);
+        } else{
+            SetSortingOrder(InitialSortingOrder);
+        }
+    }
+
+    public bool CanPlace()
+    {
+
+        if(!BoardRenderer.Instance.GetBlockFromPosition(mousePositionOnInputFinished, out Block block))  return false ;
+
+        if (block.TryAddToBlock(this) ) {
+        blockToPlace = block;
+
+        return true;
+        }
+
+        return false;
+
+    }
+
+    public void PlaceToBlock()
+    {
+        if(blockToPlace != null)
+        {
+            transform.position = blockToPlace.Position;
+        }
     }
 
     public void Init(int x, int y)
@@ -61,7 +98,6 @@ public class Triangle : MonoBehaviour
 
     public void SetSortingOrder(int order)
     {
-        sortingOrder = order;
         TriangleRenderer.sortingOrder = order;
     }
 

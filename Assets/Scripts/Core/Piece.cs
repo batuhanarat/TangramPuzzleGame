@@ -35,6 +35,33 @@ public class Piece : MonoBehaviour
         TryProgress();
     }
 
+    public bool TryPlace()
+    {
+        foreach(var triangle in unitTriangles)
+        {
+
+            // Her bir triangle için,
+            // pozisyonu hangi bloğa denk geliyor ona bakmalı
+            // eğer bulunduğu bloktaki o typeda başka bir triangle yok ise yani occupied değilse -> testi geçti
+            // true döndür  ->
+            // eğer herhangi biri false döndürürse koymayı iptal et
+
+            if(!triangle.CanPlace())
+            {
+                return false;
+            }
+
+
+        }
+
+        //notifyalltrianglestoplaced();
+        foreach(var triangle in unitTriangles) {
+            triangle.PlaceToBlock();
+        }
+        return true;
+
+    }
+
     private void InitMovableTriangles()
     {
 
@@ -82,6 +109,7 @@ public class Piece : MonoBehaviour
         foreach(var unit in unitTriangles)
         {
             unit.SetSortingOrder(order);
+            unit.InitialSortingOrder = order;
         }
     }
 

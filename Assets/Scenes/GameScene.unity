@@ -435,7 +435,7 @@ MonoBehaviour:
   BoardPrefab: {fileID: 6467544339392776382, guid: 96dc98e1912c441a18f2b5a42f28ff58, type: 3}
   rows: 3
   columns: 3
-  seed: 12
+  seed: 91
   pieceCount: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

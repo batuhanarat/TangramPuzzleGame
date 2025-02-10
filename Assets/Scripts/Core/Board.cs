@@ -1,12 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Board
 {
     [SerializeField] private SpriteRenderer GridRenderer;
+    public int OnDraggedSortingOrder { get =>  activePieces.Count + 1; }
+    public int InPlacedSortingOrder { get =>  -1 ;}
+
+    private List<Vector3> SpawnPositions = new List<Vector3>
+    {
+        new Vector3(0.615835726f, -3.57771254f, 0f),
+        new Vector3(-2.17008781f, -5.54252195f, 0f),
+        new Vector3(1.73020518f, -6.26099682f, 0f),
+        new Vector3(1.9941349f, -3.84164238f, 0f)
+    };
+
+
     private static Board _instance;
 
     public static Board Instance {
@@ -20,12 +31,23 @@ public class Board
         }
 
     }
+    public Block[,] GetBlocks()
+    {
+        return blocks;
+    }
 
     private Block[,] blocks;
     private int _columns;
     private int _rows;
     public List<Triangle> availableTriangles = new();
-    private readonly Color[] AllColors = {Color.blue, Color.green, Color.red, Color.magenta, Color.yellow, Color.grey};
+    private readonly Color[] AllColors = {
+        new Color(0xE2/255f, 0x43/255f, 0x43/255f), // E24343 - Kırmızımsı
+        new Color(0xC2/255f, 0xFF/255f, 0xB3/255f), // C2FFB3 - Açık yeşil
+        new Color(0x43/255f, 0xD2/255f, 0xE2/255f), // 43D2E2 - Açık mavi
+        new Color(0xE2/255f, 0xE2/255f, 0x43/255f), // E2E243 - Sarı
+        new Color(0x98/255f, 0x43/255f, 0xE2/255f), // 9843E2 - Mor
+        new Color(0xE2/255f, 0x8D/255f, 0x43/255f)  // E28D43 - Turuncu
+    };
     private Color[] _choosenColors;
     private List<Piece> activePieces = new();
 
@@ -134,7 +156,17 @@ public class Board
         }
         Debug.Log("pieces " + activePieces.Count);
         ArrangeSortingOrders();
+        MovePiecesFromBoard();
 
+    }
+
+
+    private void MovePiecesFromBoard()
+    {
+        for(int i = 0 ; i < activePieces.Count ; i++)
+        {
+            activePieces[i].transform.position = SpawnPositions[i];
+        }
     }
 
     private void ArrangeSortingOrders()
