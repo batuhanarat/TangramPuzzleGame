@@ -6,39 +6,44 @@ public class GameManager : MonoBehaviour
     private BoardRenderer boardRenderer;
     private Board board;
 
-    public int rows = 3;
-    public int columns = 3;
-    public int seed = 3;
-    public int pieceCount = 3;
+    private int _columns;
+    private int _rows;
+    private int _seed;
+    private int _pieceCount;
+
+    private LevelSo level;
+    public static GameManager Instance;
+
+
+    public void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+         level = Resources.Load<LevelSo>("ScriptableObjects/LevelConfig");
+        _columns = level.columns;
+        _rows = level.rows;
+        _seed = level.seed;
+        _pieceCount = level.pieceCount;
+    }
+
+    public void MoveToNextLevel()
+    {
+        level.NextLevel();
+    }
 
 
     void Start()
     {
         boardRenderer = Instantiate(BoardPrefab).GetComponent<BoardRenderer>();
         board = Board.Instance;
-        board.Init(columns,rows);
-        board.CreateTangram(seed,pieceCount);
+        board.Init(_columns,_rows);
+        board.CreateTangram(_seed,_pieceCount);
     }
 
-    void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePosition.z = 0f;
 
-            Block clickedBlock;
-            if (boardRenderer.GetBlockFromPosition(mousePosition, out clickedBlock))
-            {
-                Debug.Log($"Clicked block at position: {clickedBlock.Position}");
-            }
-        }
-        if(Input.GetKeyDown(KeyCode.H))
-        {
-            foreach(var block in board.GetBlocks())
-            {
-                Debug.Log("Block in " +block.Coordinates.x +" , " +block.Coordinates.y + "is at position " + block.Position ) ;
-            }
-        }
-    }
 }

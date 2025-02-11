@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Board
 {
@@ -9,8 +10,20 @@ public class Board
     public int OnDraggedSortingOrder { get =>  activePieces.Count + 1; }
     public int InPlacedSortingOrder { get =>  -1 ;}
 
+    private int _placedPieceCounterOnBoard;
+    public bool IsLevelCompleted { get => _placedPieceCounterOnBoard == activePieces.Count; }
+
+
     private List<Vector3> SpawnPositions = new List<Vector3>
     {
+        new Vector3(0.615835726f, -3.57771254f, 0f),
+        new Vector3(-2.17008781f, -5.54252195f, 0f),
+        new Vector3(1.73020518f, -6.26099682f, 0f),
+        new Vector3(1.9941349f, -3.84164238f, 0f),
+        new Vector3(0.615835726f, -3.57771254f, 0f),
+        new Vector3(-2.17008781f, -5.54252195f, 0f),
+        new Vector3(1.73020518f, -6.26099682f, 0f),
+        new Vector3(1.9941349f, -3.84164238f, 0f),
         new Vector3(0.615835726f, -3.57771254f, 0f),
         new Vector3(-2.17008781f, -5.54252195f, 0f),
         new Vector3(1.73020518f, -6.26099682f, 0f),
@@ -46,7 +59,13 @@ public class Board
         new Color(0x43/255f, 0xD2/255f, 0xE2/255f), // 43D2E2 - Açık mavi
         new Color(0xE2/255f, 0xE2/255f, 0x43/255f), // E2E243 - Sarı
         new Color(0x98/255f, 0x43/255f, 0xE2/255f), // 9843E2 - Mor
-        new Color(0xE2/255f, 0x8D/255f, 0x43/255f)  // E28D43 - Turuncu
+        new Color(0xE2/255f, 0x8D/255f, 0x43/255f),
+        new Color(0xE2/255f, 0x43/255f, 0x43/255f), // E24343 - Kırmızımsı
+        new Color(0xC2/255f, 0xFF/255f, 0xB3/255f), // C2FFB3 - Açık yeşil
+        new Color(0x43/255f, 0xD2/255f, 0xE2/255f), // 43D2E2 - Açık mavi
+        new Color(0xE2/255f, 0xE2/255f, 0x43/255f), // E2E243 - Sarı
+        new Color(0x98/255f, 0x43/255f, 0xE2/255f), // 9843E2 - Mor
+        new Color(0xE2/255f, 0x8D/255f, 0x43/255f)   // E28D43 - Turuncu
     };
     private Color[] _choosenColors;
     private List<Piece> activePieces = new();
@@ -74,6 +93,31 @@ public class Board
         {
             block.InitBlock();
         }
+    }
+
+    public void OnPiecePlaced()
+    {
+        _placedPieceCounterOnBoard++;
+        if(IsLevelCompleted)
+        {
+            Reset();
+            GameManager.Instance.MoveToNextLevel();
+            SceneManager.LoadScene(0);
+            Debug.Log("Kazandık !");
+        }
+    }
+
+    public void Reset()
+    {
+        availableTriangles.Clear();
+        activePieces.Clear();
+        _placedPieceCounterOnBoard = 0;
+    }
+
+
+    public void OnPieceRemoved()
+    {
+        _placedPieceCounterOnBoard--;
     }
 
     public Block GetRightBlock(int x, int y)
@@ -154,7 +198,6 @@ public class Board
                 }
             }
         }
-        Debug.Log("pieces " + activePieces.Count);
         ArrangeSortingOrders();
         MovePiecesFromBoard();
 
@@ -171,6 +214,9 @@ public class Board
 
     private void ArrangeSortingOrders()
     {
+
+        Debug.Log("active Pieces count: " +activePieces.Count);
+
         for (int i = 0; i < activePieces.Count; i++)
         {
             Debug.Log("setting sorting order for piece" + i);
