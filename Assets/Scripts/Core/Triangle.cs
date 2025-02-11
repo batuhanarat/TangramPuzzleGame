@@ -56,14 +56,19 @@ public class Triangle : MonoBehaviour
         }
 
         if(_piece.TryPlace()) {
-            SetSortingOrder(Board.Instance.InPlacedSortingOrder);
+            _piece.OnPlacedSuccessful();
         } else{
-            SetSortingOrder(InitialSortingOrder);
+            _piece.OnPlacedFailed();
         }
     }
     public void ExtractFromBoard()
     {
         blockToPlace.RemoveFromBlock(this);
+    }
+
+    public void SetInitialSortingOrder()
+    {
+        SetSortingOrder(InitialSortingOrder);
     }
 
 
@@ -72,15 +77,16 @@ public class Triangle : MonoBehaviour
 
         if(!BoardRenderer.Instance.GetBlockFromPosition(transform.position, out Block block))
         {
-            Debug.Log(Type + "could not find any block in CanPlace function ");
+            //Debug.Log(Type + "could not find any block in CanPlace function ");
             return false ;
 
         }
 
-        if (block.TryAddToBlock(this) ) {
-        blockToPlace = block;
+        if (block.CheckCanAddToBlock(this) ) {
 
-        return true;
+            blockToPlace = block;
+
+            return true;
         }
 
         return false;
@@ -97,7 +103,7 @@ public class Triangle : MonoBehaviour
         if(blockToPlace != null)
         {
             transform.position = blockToPlace.Position;
-            Debug.Log("PLACED");
+            blockToPlace.OccupyTriangleInBlock(this);
         }
     }
 

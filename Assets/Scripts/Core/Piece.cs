@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
@@ -14,10 +13,7 @@ public class Piece : MonoBehaviour
 
     public bool IsOnTheBoard = false;
 
-    public void OnMouseDown()
-    {
-        var coord = unitTriangles[0].GetCoord();
-    }
+
     public void Init(Triangle firstTriangle, Color color)
     {
         this.pieceColor = color;
@@ -35,6 +31,8 @@ public class Piece : MonoBehaviour
 
         TryProgress();
     }
+
+
     public void RemoveFromBoard()
     {
         foreach(var unit in unitTriangles)
@@ -42,7 +40,9 @@ public class Piece : MonoBehaviour
             unit.ExtractFromBoard();
         }
         IsOnTheBoard = false;
+        Board.Instance.OnPieceRemoved();
     }
+
 
     public bool TryPlace()
     {
@@ -53,14 +53,30 @@ public class Piece : MonoBehaviour
                 return false;
             }
         }
+        return true;
+    }
 
-        foreach(var triangle in unitTriangles) {
+    public void OnPlacedSuccessful()
+    {
+        foreach(var triangle in unitTriangles)
+        {
             triangle.PlaceToBlock();
+            triangle.SetSortingOrder(Board.Instance.InPlacedSortingOrder);
         }
 
         IsOnTheBoard = true;
-        return true;
+        Board.Instance.OnPiecePlaced();
+    }
 
+
+    public void OnPlacedFailed()
+    {
+        foreach(var triangle in unitTriangles)
+        {
+            triangle.SetInitialSortingOrder();
+        }
+
+        IsOnTheBoard = false;
     }
 
     private void InitMovableTriangles()

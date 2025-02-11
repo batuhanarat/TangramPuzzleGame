@@ -92,7 +92,7 @@ public class BoardRenderer : MonoBehaviour
         if (col < 0 || col >= _gridSize || row < 0 || row >= _gridSize)
         {
             block = default;
-            Debug.Log($"Invalid block position: ({col}, {row}) from world pos: {worldPosition}");
+           // Debug.Log($"Invalid block position: ({col}, {row}) from world pos: {worldPosition}");
             return false;
         }
 

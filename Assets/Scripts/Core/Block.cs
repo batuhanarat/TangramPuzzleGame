@@ -75,7 +75,29 @@ public class Block
 
     }
 
-    public bool TryAddToBlock(Triangle triangle)
+    public void OccupyTriangleInBlock(Triangle triangle)
+    {
+        switch(triangle.Type)
+        {
+            case TriangleType.LEFT:
+            IsLeftTriangleOccuppied = true;
+            break;
+
+            case TriangleType.RIGHT:
+            IsRightTriangleOccuppied = true;
+            break;
+
+            case TriangleType.UP:
+            IsUpperTriangleOccuppied = true;
+            break;
+
+            case TriangleType.DOWN:
+            IsLowerTriangleOccuppied = true;
+            break;
+        }
+    }
+
+    public bool CheckCanAddToBlock(Triangle triangle)
     {
         switch(triangle.Type)
         {
@@ -83,7 +105,7 @@ public class Block
 
                 if(!IsLeftTriangleOccuppied){
 
-                    IsLeftTriangleOccuppied = true;
+                  //  IsLeftTriangleOccuppied = true;
                     return true;
 
                 } else {
@@ -94,18 +116,18 @@ public class Block
 
                 if(!IsRightTriangleOccuppied){
 
-                        IsRightTriangleOccuppied = true;
-                        return true;
+                    // IsRightTriangleOccuppied = true;
+                    return true;
 
-                    } else {
-                        return false;
-                    }
+                } else {
+                    return false;
+                }
 
             case TriangleType.UP:
 
                 if(!IsUpperTriangleOccuppied){
 
-                    IsUpperTriangleOccuppied = true;
+                    //IsUpperTriangleOccuppied = true;
                     return true;
 
                 } else {
@@ -116,7 +138,7 @@ public class Block
 
                 if(!IsLowerTriangleOccuppied){
 
-                    IsLowerTriangleOccuppied = true;
+                    //IsLowerTriangleOccuppied = true;
                     return true;
 
                 } else {
