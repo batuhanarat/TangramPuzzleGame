@@ -2,19 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-public class TangramManager
+public class TangramManager : IProvidable
 {
     #region Private variables
+
         private readonly GameColorConfig gameColorConfig;
         private Board board;
         private PieceManager pieceManager;
+
     #endregion
 
-    public TangramManager(GameColorConfig colorConfig, Board Board, PieceManager PieceManager)
+    public TangramManager()
     {
-        gameColorConfig = colorConfig;
-        board = Board.Instance;
-        pieceManager = PieceManager;
+        ServiceProvider.Register(this);
+        pieceManager = ServiceProvider.PieceManager;
+        board = ServiceProvider.Board;
+        gameColorConfig = ServiceProvider.GameColorConfig;
     }
 
     public void CreateTangram(int pieceCount)

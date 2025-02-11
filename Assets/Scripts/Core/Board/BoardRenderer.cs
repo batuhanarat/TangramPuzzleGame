@@ -1,11 +1,8 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardRenderer : MonoBehaviour
+public class BoardRenderer : MonoBehaviour, IProvidable
 {
     [Header("Board Settings")]
-
-    public static BoardRenderer Instance;
     private int _gridSize;
     private float widthPercentage = 0.8f;
     private float heightPercentage = 0.4f;
@@ -17,13 +14,7 @@ public class BoardRenderer : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
+        ServiceProvider.Register(this);
     }
 
     public void AdjustBoard(int columns, int rows, Block[,] blocks)

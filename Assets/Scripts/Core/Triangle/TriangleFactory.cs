@@ -1,21 +1,25 @@
 using UnityEngine;
 
-public class TriangleFactory : MonoBehaviour
+public class TriangleFactory : MonoBehaviour, IProvidable
 {
-    public TriangleConfig triangleConfig;
-    public Transform TriangleRoot;
-    public static TriangleFactory Instance;
+    #region Private Variables
+
+        private TriangleConfig triangleConfig;
+
+    #endregion
+
+    #region Serialized Variables
+
+        [SerializeField] public Transform TriangleRoot;
+
+    #endregion
 
 
     public void Awake()
     {
-        triangleConfig = Resources.Load<TriangleConfig>("ScriptableObjects/TriangleConfig");
+        ServiceProvider.Register(this);
+        triangleConfig = ServiceProvider.TriangleConfig;
 
-        if(Instance != null && Instance != this ) {
-            Destroy(gameObject);
-        } else {
-            Instance = this;
-        }
     }
 
     public Triangle GetTriangleFromType(TriangleType type, Vector3 position)

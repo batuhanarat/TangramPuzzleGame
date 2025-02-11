@@ -38,7 +38,8 @@ public class Block
 
     public Block(int x, int y, Vector3 boardCenter, float cellSize, int gridSize)
     {
-        board = Board.Instance;
+        board = ServiceProvider.Board;
+
         this.x = x;
         this.y = y;
         coordinates = new Vector2Int(x, y);
@@ -109,7 +110,8 @@ public class Block
 
     private Triangle CreateTriangle(TriangleType type)
     {
-        Triangle triangle = TriangleFactory.Instance.GetTriangleFromType(type, Position);
+
+        Triangle triangle = ServiceProvider.TriangleFactory.GetTriangleFromType(type, Position);
 
         SpriteRenderer sr = triangle.GetComponent<SpriteRenderer>();
         float scale = cellSize / sr.sprite.bounds.size.x;
@@ -117,7 +119,7 @@ public class Block
 
         triangle.Init(x, y);
 
-        Board.Instance.AddToAvailableTriangles(triangle);
+        board.AddToAvailableTriangles(triangle);
         return triangle;
     }
 

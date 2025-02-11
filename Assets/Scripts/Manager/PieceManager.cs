@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-public class PieceManager
+public class PieceManager : IProvidable
 {
     #region Private Variables
         private List<Piece> activePieces = new();
@@ -30,9 +30,10 @@ public class PieceManager
     #endregion
 
 
-    public PieceManager(LevelManager LevelManager)
+    public PieceManager()
     {
-        levelManager = LevelManager;
+        ServiceProvider.Register(this);
+        levelManager = ServiceProvider.LevelManager;
     }
 
     public void AddPiece(Piece piece)
@@ -75,7 +76,6 @@ public class PieceManager
         _placedPieceCounterOnBoard++;
         if(IsLevelCompleted)
         {
-            Reset();
             levelManager.LoadNextLevel();
             Debug.Log("Kazandık !");
         }

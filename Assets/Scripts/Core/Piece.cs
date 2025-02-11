@@ -12,6 +12,7 @@ public class Piece : MonoBehaviour
         private List<Triangle> moveableTriangles = new();
         private int _sortingOrder;
         private PieceManager pieceManager;
+        private Board board;
         private bool _isLocked;
         private bool _isPlaced;
 
@@ -24,6 +25,12 @@ public class Piece : MonoBehaviour
         public bool IsOnTheBoard = false;
 
     #endregion
+
+    private void Awake()
+    {
+        board = ServiceProvider.Board;
+        pieceManager = ServiceProvider.PieceManager;
+    }
 
 
     public void OnStartDrag()
@@ -55,7 +62,7 @@ public class Piece : MonoBehaviour
             firstTriangle
         };
         firstTriangle.ChangeColor(color,this);
-        Board.Instance.RemoveFromAAvailableTriangels(firstTriangle);
+        board.RemoveFromAvailableTriangels(firstTriangle);
 
         if (firstTriangle.transform != null && this.transform != null)
         {
@@ -144,7 +151,7 @@ public class Piece : MonoBehaviour
 
             unitTriangles.Add(triangletoCapture);
             triangletoCapture.ChangeColor(pieceColor,this);
-            Board.Instance.RemoveFromAAvailableTriangels(triangletoCapture);
+            board.RemoveFromAvailableTriangels(triangletoCapture);
             if (triangletoCapture.transform != null && this.transform != null)
             {
                 triangletoCapture.transform.parent = this.transform;
@@ -171,7 +178,7 @@ public class Piece : MonoBehaviour
 
         unitTriangles.Add(triangletoCapture);
         triangletoCapture.ChangeColor(pieceColor,this);
-        Board.Instance.RemoveFromAAvailableTriangels(triangletoCapture);
+        board.RemoveFromAvailableTriangels(triangletoCapture);
         callback(true);
     }
 

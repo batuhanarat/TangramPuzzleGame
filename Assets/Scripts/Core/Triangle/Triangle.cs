@@ -6,7 +6,6 @@ public class Triangle : MonoBehaviour
     [SerializeField] private TriangleType triangleType;
     [SerializeField] private SpriteRenderer TriangleRenderer;
 
-
     public TriangleType TriangleType { get => triangleType; }
 
     private List<Triangle> _neighbors = new();
@@ -74,22 +73,19 @@ public class Triangle : MonoBehaviour
 
     public bool CanPlace()
     {
-
-        if(!BoardRenderer.Instance.GetBlockFromPosition(transform.position, out Block block))
+        if(!ServiceProvider.BoardRenderer.GetBlockFromPosition(transform.position, out Block block))
         {
             return false ;
-
         }
 
-        if (block.CheckCanAddToBlock(this) ) {
-
+        if (block.CheckCanAddToBlock(this) )
+        {
             blockToPlace = block;
 
             return true;
         }
 
         return false;
-
     }
 
     public void PlaceToBlock()

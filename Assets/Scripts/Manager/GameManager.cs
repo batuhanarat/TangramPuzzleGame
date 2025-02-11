@@ -7,47 +7,36 @@ public class GameManager : MonoBehaviour
     #region Private Variables
         private BoardRenderer boardRenderer;
         private Board board;
-        private int _columns;
-        private int _rows;
-        private int _seed;
-        private int _pieceCount;
-        private LevelSo level;
         private TangramManager tangramManager;
+        private int _columns,_rows, _pieceCount;
+        private LevelSo _level;
 
     #endregion
 
-    #region Properties
-
-        public static GameManager Instance;
-
-    #endregion
-
-
-    public void Awake()
+    private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        level = Resources.Load<LevelSo>("ScriptableObjects/LevelConfig");
-        _columns = level.columns;
-        _rows = level.rows;
-        _seed = level.seed;
-        _pieceCount = level.pieceCount;
-        UnityEngine.Random.InitState(_seed);
+        board = ServiceProvider.Board;
+        tangramManager = ServiceProvider.TangramManager;
+        _level = ServiceProvider.Level;
     }
 
-
-    void Start()
+    private void Start()
     {
         boardRenderer = Instantiate(BoardPrefab).GetComponent<BoardRenderer>();
-        board = Board.Instance;
+        GetLevelData();
+        StartGame();
+    }
 
+    private void GetLevelData()
+    {
+        _columns = _level.columns;
+        _rows = _level.rows;
+        _pieceCount = _level.pieceCount;
+    }
+
+    public void StartGame()
+    {
         board.Initialize(_columns,_rows);
-
         tangramManager.CreateTangram(_pieceCount);
     }
 

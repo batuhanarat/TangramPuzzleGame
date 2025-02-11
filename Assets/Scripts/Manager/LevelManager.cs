@@ -1,13 +1,14 @@
 using UnityEngine.SceneManagement;
 
-public class LevelManager
+public class LevelManager : IProvidable
 {
 
     private LevelSo level;
 
-    public LevelManager(LevelSo levelSO)
+    public LevelManager()
     {
-        level = levelSO;
+        ServiceProvider.Register(this);
+        level = ServiceProvider.Level;
     }
     public void LoadNextLevel()
     {

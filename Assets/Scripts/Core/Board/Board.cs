@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 
-public class Board
+public class Board : IProvidable
 {
 
     #region Private Variables
 
-        private static Board _instance;
         private Block[,] blocks;
         private int _columns;
         private int _rows;
@@ -13,30 +12,17 @@ public class Board
 
     #endregion
 
+    public Board()
+    {
+        ServiceProvider.Register(this);
+    }
 
-
-    #region Singleton
-
-        public static Board Instance {
-            get
-        {
-                if (_instance == null)
-                {
-                    _instance = new Board();
-                }
-                return _instance;
-            }
-        }
-
-        private Board(){}
-
-    #endregion
     public void AddToAvailableTriangles(Triangle triangle)
     {
         availableTriangles.Add(triangle);
     }
 
-    public void RemoveFromAAvailableTriangels(Triangle triangle)
+    public void RemoveFromAvailableTriangels(Triangle triangle)
     {
         availableTriangles.Remove(triangle);
     }
@@ -59,7 +45,7 @@ public class Board
         _rows = rows;
         blocks = new Block[columns, rows];
 
-        BoardRenderer.Instance.AdjustBoard(columns, rows, blocks);
+        ServiceProvider.BoardRenderer.AdjustBoard(columns, rows, blocks);
     }
 
     private void InitializeBlocks()
@@ -70,12 +56,10 @@ public class Board
         }
     }
 
-
     public void Reset()
     {
         availableTriangles.Clear();
     }
-
 
     public Block GetRightBlock(int x, int y)
     {
