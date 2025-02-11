@@ -33,7 +33,6 @@ public class BoardRenderer : MonoBehaviour
         InitializeBoard(columns, rows, blocks);
     }
 
-
     private void InitializeBoard(int columns, int rows, Block[,] blocks)
     {
         Camera mainCamera = Camera.main;
@@ -49,6 +48,7 @@ public class BoardRenderer : MonoBehaviour
         BoardCenter = new Vector3(0f, boardTopEdgeY - (boardSize / 2f), 0f);
 
         SpriteRenderer boardSprite = GetComponent<SpriteRenderer>();
+
         if (boardSprite != null && boardSprite.sprite != null)
         {
             float originalSize = boardSprite.sprite.bounds.size.x;
@@ -80,6 +80,7 @@ public class BoardRenderer : MonoBehaviour
             cell.transform.localScale = Vector3.one * (targetSize / originalCellSize);
         }
     }
+
     public bool GetBlockFromPosition(Vector3 worldPosition, out Block block)
     {
         Vector3 localPosition = worldPosition - BoardCenter;
@@ -92,11 +93,11 @@ public class BoardRenderer : MonoBehaviour
         if (col < 0 || col >= _gridSize || row < 0 || row >= _gridSize)
         {
             block = default;
-           // Debug.Log($"Invalid block position: ({col}, {row}) from world pos: {worldPosition}");
             return false;
         }
 
         block = _blocks[col, row];
         return true;
     }
+
 }

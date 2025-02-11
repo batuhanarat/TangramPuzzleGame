@@ -1,17 +1,17 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Triangle : MonoBehaviour
 {
-    [SerializeField] private TriangleType TriangleType;
-
-    public TriangleType Type { get => TriangleType; }
+    [SerializeField] private TriangleType triangleType;
     [SerializeField] private SpriteRenderer TriangleRenderer;
 
+
+    public TriangleType TriangleType { get => triangleType; }
+
     private List<Triangle> _neighbors = new();
-    private int X;
-    private int Y;
+    private Vector2Int coordinates;
+
     private bool _isOccupied = false;
     public int InitialSortingOrder;
     private Vector3 _offset;
@@ -24,7 +24,7 @@ public class Triangle : MonoBehaviour
 
     public bool IsAvailableToCapture  => !_isOccupied ;
 
-
+/*
     public void OnMouseDown()
     {
         if (_piece == null) return;
@@ -61,6 +61,7 @@ public class Triangle : MonoBehaviour
             _piece.OnPlacedFailed();
         }
     }
+    */
     public void ExtractFromBoard()
     {
         blockToPlace.RemoveFromBlock(this);
@@ -71,13 +72,11 @@ public class Triangle : MonoBehaviour
         SetSortingOrder(InitialSortingOrder);
     }
 
-
     public bool CanPlace()
     {
 
         if(!BoardRenderer.Instance.GetBlockFromPosition(transform.position, out Block block))
         {
-            //Debug.Log(Type + "could not find any block in CanPlace function ");
             return false ;
 
         }
@@ -93,11 +92,6 @@ public class Triangle : MonoBehaviour
 
     }
 
-    public void ExtractFromBlock()
-    {
-
-    }
-
     public void PlaceToBlock()
     {
         if(blockToPlace != null)
@@ -109,13 +103,10 @@ public class Triangle : MonoBehaviour
 
     public void Init(int x, int y)
     {
-        this.X = x;
-        this.Y = y;
+        coordinates = new Vector2Int(x,y);
     }
-    public Vector2Int GetCoord()
-    {
-        return new Vector2Int(X,Y);
-    }
+
+
     public void ChangeColor(Color color, Piece piece)
     {
         _isOccupied = true;

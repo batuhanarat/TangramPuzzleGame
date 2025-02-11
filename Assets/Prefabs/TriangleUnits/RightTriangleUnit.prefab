@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7764195391783208942}
   - component: {fileID: 3566909181340547578}
+  - component: {fileID: 8981318646101143952}
   - component: {fileID: 2305426786852710548}
   - component: {fileID: 3154368121646186492}
   m_Layer: 0
@@ -46,9 +47,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b89cd3101c301495eb07f0578e916871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TriangleType: 1
+  triangleType: 0
   TriangleRenderer: {fileID: 2305426786852710548}
-  sortingOrder: 0
+  InitialSortingOrder: 0
+  _piece: {fileID: 0}
+--- !u!114 &8981318646101143952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100954945975343435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e8c42807de7a49be825889a15e45b34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &2305426786852710548
 SpriteRenderer:
   m_ObjectHideFlags: 0

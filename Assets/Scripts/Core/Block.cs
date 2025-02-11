@@ -1,207 +1,160 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Block
 {
-    private readonly int X;
-    private readonly int Y;
-    public UnityEngine.Vector3 Position;
-    public Vector2Int Coordinates { get => new Vector2Int(X,Y); }
+    #region Private Variables
 
-    public Triangle UpperTriangle { get; private set; }
-    public Triangle LowerTriangle { get; private set; }
-    public Triangle RightTriangle { get; private set; }
-    public Triangle LeftTriangle { get; private set; }
+        private readonly int x;
+        private readonly int y;
+        private readonly Vector2Int coordinates;
+        private readonly Dictionary<TriangleType, bool> triangleOccupancy;
+        private readonly Dictionary<TriangleType, Triangle> triangles;
+        private readonly float cellSize;
+        private readonly Board board;
 
-    public bool IsLeftTriangleOccuppied { get; private set; }
-    public bool IsRightTriangleOccuppied { get; private set; }
-    public bool IsUpperTriangleOccuppied { get; private set; }
-    public bool IsLowerTriangleOccuppied { get; private set; }
+    #endregion
+
+    #region Properties
+
+        public Vector3 Position { get; }
+        public Vector2Int Coordinates => coordinates;
 
 
-    public Block(int x, int y, UnityEngine.Vector3 boardCenter, float cellSize, int gridSize)
+        public Triangle UpperTriangle => triangles[TriangleType.UP];
+        public Triangle LowerTriangle => triangles[TriangleType.DOWN];
+        public Triangle RightTriangle => triangles[TriangleType.RIGHT];
+        public Triangle LeftTriangle => triangles[TriangleType.LEFT];
+
+
+        public bool IsLeftTriangleOccupied => triangleOccupancy[TriangleType.LEFT];
+        public bool IsRightTriangleOccupied => triangleOccupancy[TriangleType.RIGHT];
+        public bool IsUpperTriangleOccupied => triangleOccupancy[TriangleType.UP];
+        public bool IsLowerTriangleOccupied => triangleOccupancy[TriangleType.DOWN];
+
+    #endregion
+
+
+    public Block(int x, int y, Vector3 boardCenter, float cellSize, int gridSize)
     {
-       // gridSize burada rows ya da col, -> çünkü kare
-        this.X = x;
-        this.Y = y;
+        board = Board.Instance;
+        this.x = x;
+        this.y = y;
+        coordinates = new Vector2Int(x, y);
+        this.cellSize = cellSize;
 
-        Position = boardCenter + new UnityEngine.Vector3(
-            (x * cellSize) - (cellSize * (gridSize - 1) / 2f),
-            (y * cellSize) - (cellSize * (gridSize - 1) / 2f),
-            0f
-        );
-
-        UpperTriangle = CreateTriangle(TriangleType.UP, Position, cellSize);
-        LowerTriangle = CreateTriangle(TriangleType.DOWN, Position, cellSize);
-        RightTriangle = CreateTriangle(TriangleType.RIGHT, Position, cellSize);
-        LeftTriangle = CreateTriangle(TriangleType.LEFT, Position, cellSize);
+        Position = CalculateWorldPosition(boardCenter, gridSize);
+        triangleOccupancy = InitializeTriangleOccupancy();
+        triangles = InitializeTriangles();
     }
 
-
-    private Triangle CreateTriangle(TriangleType type, UnityEngine.Vector3 position, float cellSize)
-    {
-        Triangle triangle = TriangleFactory.Instance.GetTriangleFromType(type, position);
-
-        SpriteRenderer sr = triangle.GetComponent<SpriteRenderer>();
-        float scale = cellSize / sr.sprite.bounds.size.x;
-        triangle.transform.localScale = new UnityEngine.Vector3(scale, scale, 1f);
-
-        triangle.Init(X, Y);
-        Board.Instance.availableTriangles.Add(triangle);
-        return triangle;
-    }
     public void RemoveFromBlock(Triangle triangle)
     {
-        switch(triangle.Type)
-        {
-            case TriangleType.LEFT:
-                    IsLeftTriangleOccuppied = false;
-                    break;
-
-            case TriangleType.RIGHT:
-                    IsRightTriangleOccuppied = false;
-                    break;
-
-            case TriangleType.UP:
-                    IsUpperTriangleOccuppied = false;
-                    break;
-
-            case TriangleType.DOWN:
-                    IsLowerTriangleOccuppied = false;
-                    break;
-
-            default:
-            break;
-        }
-
+        if (triangle == null) return;
+        triangleOccupancy[triangle.TriangleType] = false;
     }
 
     public void OccupyTriangleInBlock(Triangle triangle)
     {
-        switch(triangle.Type)
-        {
-            case TriangleType.LEFT:
-            IsLeftTriangleOccuppied = true;
-            break;
-
-            case TriangleType.RIGHT:
-            IsRightTriangleOccuppied = true;
-            break;
-
-            case TriangleType.UP:
-            IsUpperTriangleOccuppied = true;
-            break;
-
-            case TriangleType.DOWN:
-            IsLowerTriangleOccuppied = true;
-            break;
-        }
+        if (triangle == null) return;
+        triangleOccupancy[triangle.TriangleType] = true;
     }
 
     public bool CheckCanAddToBlock(Triangle triangle)
     {
-        switch(triangle.Type)
-        {
-            case TriangleType.LEFT:
-
-                if(!IsLeftTriangleOccuppied){
-
-                  //  IsLeftTriangleOccuppied = true;
-                    return true;
-
-                } else {
-                    return false;
-                }
-
-            case TriangleType.RIGHT:
-
-                if(!IsRightTriangleOccuppied){
-
-                    // IsRightTriangleOccuppied = true;
-                    return true;
-
-                } else {
-                    return false;
-                }
-
-            case TriangleType.UP:
-
-                if(!IsUpperTriangleOccuppied){
-
-                    //IsUpperTriangleOccuppied = true;
-                    return true;
-
-                } else {
-                    return false;
-                }
-
-            case TriangleType.DOWN:
-
-                if(!IsLowerTriangleOccuppied){
-
-                    //IsLowerTriangleOccuppied = true;
-                    return true;
-
-                } else {
-                    return false;
-                }
-
-            default:
-            break;
-        }
-        return false;
-
+        if (triangle == null) return false;
+        return !triangleOccupancy[triangle.TriangleType];
     }
 
     public void InitBlock()
     {
-        Triangle bellowTriangle1;
-        if(Board.Instance.GetUpperBlock(X,Y) != null)
+        foreach (var type in Enum.GetValues(typeof(TriangleType)))
         {
-            bellowTriangle1 =  Board.Instance.GetUpperBlock(X,Y).LowerTriangle;
-        } else {
-            bellowTriangle1  = null;
+            var triangleType = (TriangleType)type;
+            var (left, right, opposite) = GetNeighborsForType(triangleType);
+            triangles[triangleType].SetNeighbors(left, right, opposite);
         }
-        UpperTriangle.SetNeighbors(LeftTriangle, RightTriangle, bellowTriangle1 );
-
-
-
-        Triangle upperTriangle1;
-        if(Board.Instance.GetBellowBlock(X,Y) != null)
-        {
-            upperTriangle1 =  Board.Instance.GetBellowBlock(X,Y).UpperTriangle;
-        } else {
-            upperTriangle1  = null;
-        }
-
-        LowerTriangle.SetNeighbors(LeftTriangle, RightTriangle, upperTriangle1 );
-
-
-
-
-        Triangle leftTriangle1;
-        if(Board.Instance.GetRightBlock(X,Y) != null)
-        {
-            leftTriangle1 =   Board.Instance.GetRightBlock(X,Y).LeftTriangle;
-        } else {
-            leftTriangle1  = null;
-        }
-        RightTriangle.SetNeighbors(UpperTriangle, LowerTriangle, leftTriangle1 );
-
-
-
-
-        Triangle rightTriangle1;
-        if(Board.Instance.GetLeftBlock(X,Y) != null)
-        {
-            rightTriangle1 =  Board.Instance.GetLeftBlock(X,Y).RightTriangle ;
-        } else {
-            rightTriangle1  = null;
-        }
-        LeftTriangle.SetNeighbors(UpperTriangle, LowerTriangle, rightTriangle1);
-
-
-
     }
+
+    private Vector3 CalculateWorldPosition(Vector3 boardCenter, int gridSize)
+    {
+        float offset = cellSize * (gridSize - 1) / 2f;
+        return boardCenter + new Vector3(
+            (x * cellSize) - offset,
+            (y * cellSize) - offset,
+            0f
+        );
+    }
+
+    private Dictionary<TriangleType, bool> InitializeTriangleOccupancy()
+    {
+        var occupancy = new Dictionary<TriangleType, bool>();
+        foreach (TriangleType type in Enum.GetValues(typeof(TriangleType)))
+        {
+            occupancy[type] = false;
+        }
+        return occupancy;
+    }
+
+    private Dictionary<TriangleType, Triangle> InitializeTriangles()
+    {
+        var triangleDict = new Dictionary<TriangleType, Triangle>();
+        foreach (TriangleType type in Enum.GetValues(typeof(TriangleType)))
+        {
+            triangleDict[type] = CreateTriangle(type);
+        }
+        return triangleDict;
+    }
+
+    private Triangle CreateTriangle(TriangleType type)
+    {
+        Triangle triangle = TriangleFactory.Instance.GetTriangleFromType(type, Position);
+
+        SpriteRenderer sr = triangle.GetComponent<SpriteRenderer>();
+        float scale = cellSize / sr.sprite.bounds.size.x;
+        triangle.transform.localScale = new Vector3(scale, scale, 1f);
+
+        triangle.Init(x, y);
+
+        Board.Instance.AddToAvailableTriangles(triangle);
+        return triangle;
+    }
+
+    private (Triangle left, Triangle right, Triangle opposite) GetNeighborsForType(TriangleType type)
+    {
+        return type switch
+        {
+            TriangleType.UP => (LeftTriangle, RightTriangle, GetNeighborTriangle(type)),
+            TriangleType.DOWN => (LeftTriangle, RightTriangle, GetNeighborTriangle(type)),
+            TriangleType.RIGHT => (UpperTriangle, LowerTriangle, GetNeighborTriangle(type)),
+            TriangleType.LEFT => (UpperTriangle, LowerTriangle, GetNeighborTriangle(type)),
+            _ => throw new ArgumentException($"Invalid triangle type: {type}")
+        };
+    }
+
+    private Triangle GetNeighborTriangle(TriangleType type)
+    {
+        var neighborBlock = type switch
+        {
+            TriangleType.UP => board.GetUpperBlock(x, y),
+            TriangleType.DOWN => board.GetBellowBlock(x, y),
+            TriangleType.RIGHT => board.GetRightBlock(x, y),
+            TriangleType.LEFT => board.GetLeftBlock(x, y),
+            _ => throw new ArgumentException($"Invalid triangle type: {type}")
+        };
+
+        return neighborBlock?.GetOppositeTriangle(type);
+    }
+
+    private Triangle GetOppositeTriangle(TriangleType type) => type switch
+    {
+        TriangleType.UP => LowerTriangle,
+        TriangleType.DOWN => UpperTriangle,
+        TriangleType.RIGHT => LeftTriangle,
+        TriangleType.LEFT => RightTriangle,
+        _ => throw new ArgumentException($"Invalid triangle type: {type}")
+    };
 
 
 }

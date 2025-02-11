@@ -5,13 +5,46 @@ using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
-    private Color pieceColor;
-    private List<Triangle> unitTriangles;
-    private List<Triangle> moveableTriangles = new();
-    private int _sortingOrder;
-    public Vector3 Position { get => transform.position; }
+    #region Private Variables
 
-    public bool IsOnTheBoard = false;
+        private Color pieceColor;
+        private List<Triangle> unitTriangles;
+        private List<Triangle> moveableTriangles = new();
+        private int _sortingOrder;
+        private PieceManager pieceManager;
+        private bool _isLocked;
+        private bool _isPlaced;
+
+    #endregion
+
+    #region Properties
+
+        public bool CanBeDragged  => !_isLocked;
+        public Vector3 Position { get => transform.position; }
+        public bool IsOnTheBoard = false;
+
+    #endregion
+
+
+    public void OnStartDrag()
+    {
+        if (_isPlaced)
+        {
+            RemoveFromBoard();
+        }
+    }
+
+    public void OnEndDrag()
+    {
+        if (TryPlace())
+        {
+            OnPlacedSuccessful();
+        }
+        else
+        {
+            OnPlacedFailed();
+        }
+    }
 
 
     public void Init(Triangle firstTriangle, Color color)
@@ -22,7 +55,7 @@ public class Piece : MonoBehaviour
             firstTriangle
         };
         firstTriangle.ChangeColor(color,this);
-        Board.Instance.availableTriangles.Remove(firstTriangle);
+        Board.Instance.RemoveFromAAvailableTriangels(firstTriangle);
 
         if (firstTriangle.transform != null && this.transform != null)
         {
@@ -33,18 +66,18 @@ public class Piece : MonoBehaviour
     }
 
 
-    public void RemoveFromBoard()
+    private void RemoveFromBoard()
     {
         foreach(var unit in unitTriangles)
         {
             unit.ExtractFromBoard();
         }
         IsOnTheBoard = false;
-        Board.Instance.OnPieceRemoved();
+        pieceManager.OnPieceRemoved();
     }
 
 
-    public bool TryPlace()
+    private bool TryPlace()
     {
         foreach(var triangle in unitTriangles)
         {
@@ -56,20 +89,20 @@ public class Piece : MonoBehaviour
         return true;
     }
 
-    public void OnPlacedSuccessful()
+    private void OnPlacedSuccessful()
     {
         foreach(var triangle in unitTriangles)
         {
             triangle.PlaceToBlock();
-            triangle.SetSortingOrder(Board.Instance.InPlacedSortingOrder);
+            triangle.SetSortingOrder(pieceManager.InPlacedSortingOrder);
         }
 
         IsOnTheBoard = true;
-        Board.Instance.OnPiecePlaced();
+        pieceManager.OnPiecePlaced();
     }
 
 
-    public void OnPlacedFailed()
+    private void OnPlacedFailed()
     {
         foreach(var triangle in unitTriangles)
         {
@@ -111,7 +144,7 @@ public class Piece : MonoBehaviour
 
             unitTriangles.Add(triangletoCapture);
             triangletoCapture.ChangeColor(pieceColor,this);
-            Board.Instance.availableTriangles.Remove(triangletoCapture);
+            Board.Instance.RemoveFromAAvailableTriangels(triangletoCapture);
             if (triangletoCapture.transform != null && this.transform != null)
             {
                 triangletoCapture.transform.parent = this.transform;
@@ -138,7 +171,7 @@ public class Piece : MonoBehaviour
 
         unitTriangles.Add(triangletoCapture);
         triangletoCapture.ChangeColor(pieceColor,this);
-        Board.Instance.availableTriangles.Remove(triangletoCapture);
+        Board.Instance.RemoveFromAAvailableTriangels(triangletoCapture);
         callback(true);
     }
 
@@ -146,8 +179,5 @@ public class Piece : MonoBehaviour
     {
         transform.position = position;
     }
-
-
-
 
 }
