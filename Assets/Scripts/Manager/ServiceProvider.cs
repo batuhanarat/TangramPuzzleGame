@@ -16,6 +16,8 @@ public static class ServiceProvider
     public static ITangramManager TangramManager => GetManager<BaseTangramManager>();
     public static ISpawnManager SpawnManager => GetManager<SpawnManager>();
     public static LevelSo Level;
+    public static GameConfig GameConfig;
+
 
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -26,13 +28,24 @@ public static class ServiceProvider
             Level = Resources.Load<LevelSo>("ScriptableObjects/LevelConfig");
         }
 
+
+        GameConfig = Resources.Load<GameConfig>("ScriptableObjects/GameConfig");
+
+
         UnityEngine.Random.InitState(Level.seed);
 
         _ = new Board();
         _ = new LevelManager();
         _ = new SpawnManager();
         _ = new PieceManager();
-        _ = new InstantTangramManager();
+
+        if(GameConfig.IsPieceCreationAnimated)
+        {
+            _ = new AnimatedTangramManager();
+        } else {
+            _ = new InstantTangramManager();
+        }
+
         _ = new TriangleFactory();
 
 

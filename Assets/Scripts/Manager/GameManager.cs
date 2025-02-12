@@ -4,6 +4,7 @@ public class GameManager : MonoBehaviour
 {
 
     #region Private Variables
+
         private BoardRenderer boardRenderer;
         private Board board;
         private ITangramManager tangramManager;
@@ -11,6 +12,11 @@ public class GameManager : MonoBehaviour
         private LevelSo _level;
 
     #endregion
+
+    [Header("Game Settings")]
+    [SerializeField] private GameConfig gameConfig;
+
+
 
     private void Awake()
     {
@@ -37,7 +43,6 @@ public class GameManager : MonoBehaviour
     {
         board.Initialize(_columns,_rows);
         tangramManager.CreateTangram(_pieceCount);
-        //tangramManager.CreateTangramWithAnimation(_pieceCount);
     }
 
 

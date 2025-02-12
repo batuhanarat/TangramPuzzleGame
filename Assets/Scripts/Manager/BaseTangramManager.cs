@@ -10,7 +10,7 @@ public abstract class BaseTangramManager : IProvidable, ITangramManager
 {
     #region Protected Variables
 
-        protected  GameColorConfig gameColorConfig;
+        protected GameColorConfig gameColorConfig;
         protected Board board;
         protected IPieceManager pieceManager;
 
