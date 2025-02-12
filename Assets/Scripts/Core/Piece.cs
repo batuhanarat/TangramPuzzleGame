@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -70,6 +69,8 @@ public class Piece : MonoBehaviour
         }
 
         TryProgress();
+
+       //CoroutineRunner.Instance.StartCoroutine(TryProgressWithAnimation());
     }
 
 
@@ -147,19 +148,39 @@ public class Piece : MonoBehaviour
         }
         else
         {
-            int index = UnityEngine.Random.Range(0, moveableTriangles.Count);
-            var triangletoCapture = moveableTriangles[index];
-
-            unitTriangles.Add(triangletoCapture);
-            triangletoCapture.ChangeColor(pieceColor,this);
-            board.RemoveFromAvailableTriangels(triangletoCapture);
-            if (triangletoCapture.transform != null && this.transform != null)
-            {
-                triangletoCapture.transform.parent = this.transform;
-            }
-                return true;
-            }
+            Capture();
+            return true;
+        }
     }
+    public IEnumerator TryProgressWithAnimation()
+    {
+
+        moveableTriangles.Clear();
+        InitMovableTriangles();
+
+        if (moveableTriangles.Count == 0)
+        {
+            yield  break;
+        }
+        yield return new WaitForSeconds(0.05f);
+        Capture();
+        yield return true;
+    }
+
+    private void Capture()
+    {
+        int index = UnityEngine.Random.Range(0, moveableTriangles.Count);
+        var triangletoCapture = moveableTriangles[index];
+
+        unitTriangles.Add(triangletoCapture);
+        triangletoCapture.ChangeColor(pieceColor,this);
+        board.RemoveFromAvailableTriangels(triangletoCapture);
+        if (triangletoCapture.transform != null && this.transform != null)
+        {
+            triangletoCapture.transform.parent = this.transform;
+        }
+    }
+
 
     public void SetSortingOrder(int order)
     {
@@ -172,17 +193,6 @@ public class Piece : MonoBehaviour
         transform.position = transform.position - new Vector3(0,0,order);
     }
 
-    private IEnumerator CaptureCoroutine(Action<bool> callback)
-    {
-        yield return new WaitForSeconds(1f);
-        int index = UnityEngine.Random.Range(0, moveableTriangles.Count);
-        var triangletoCapture = moveableTriangles[index];
-
-        unitTriangles.Add(triangletoCapture);
-        triangletoCapture.ChangeColor(pieceColor,this);
-        board.RemoveFromAvailableTriangels(triangletoCapture);
-        callback(true);
-    }
     public void PlayPlacedAnimation()
     {
         Sequence sequence = DOTween.Sequence();

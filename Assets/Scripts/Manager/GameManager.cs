@@ -37,7 +37,9 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         board.Initialize(_columns,_rows);
-        tangramManager.CreateTangram(_pieceCount);
+        //tangramManager.CreateTangram(_pieceCount);
+
+        tangramManager.CreateTangramWithAnimation(_pieceCount);
     }
 
 

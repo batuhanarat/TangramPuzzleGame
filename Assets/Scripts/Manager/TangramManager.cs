@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,11 +21,49 @@ public class TangramManager : IProvidable
         gameColorConfig = ServiceProvider.GameColorConfig;
     }
 
+    private IEnumerator ProgressPiecesUntilCompleteWithAnimation()
+    {
+        var piecesInProgress = pieceManager.GetActivePieces().ToList();
+
+        while (piecesInProgress.Any())
+        {
+            for (int i = piecesInProgress.Count - 1; i >= 0; i--)
+            {
+                var progressRoutine = piecesInProgress[i].TryProgressWithAnimation();
+                bool canContinue = false;
+
+                while (progressRoutine.MoveNext())
+                {
+                    if (progressRoutine.Current != null)
+                    {
+                        yield return progressRoutine.Current;
+                        canContinue = true;
+                    }
+                }
+
+                if (!canContinue)
+                {
+                    piecesInProgress.RemoveAt(i);
+                }
+            }
+        }
+
+        Debug.Log("All pieces are created");
+        ArrangePieces();
+    }
+
+
     public void CreateTangram(int pieceCount)
     {
         CreateInitialPieces(pieceCount);
         ProgressPiecesUntilComplete();
         ArrangePieces();
+    }
+
+    public void CreateTangramWithAnimation(int pieceCount)
+    {
+        CreateInitialPieces(pieceCount);
+        CoroutineRunner.Instance.StartCoroutine(ProgressPiecesUntilCompleteWithAnimation());
     }
 
     private void CreateInitialPieces(int pieceCount)
