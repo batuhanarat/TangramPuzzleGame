@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
         private BoardRenderer boardRenderer;
         private Board board;
         private ITangramManager tangramManager;
-        private int _columns,_rows, _pieceCount;
-        private LevelSo _level;
+        private ILevelManager levelManager;
 
+       // private LevelSo _level;
     #endregion
 
     [Header("Game Settings")]
@@ -22,27 +22,26 @@ public class GameManager : MonoBehaviour
     {
         board = ServiceProvider.Board;
         tangramManager = ServiceProvider.TangramManager;
-        _level = ServiceProvider.Level;
+        levelManager = ServiceProvider.LevelManager;
     }
 
     private void Start()
     {
         boardRenderer = ServiceProvider.AssetLibrary.GetAsset<BoardRenderer>(AssetType.Board);
-        GetLevelData();
+        SetupGame();
         StartGame();
     }
 
-    private void GetLevelData()
+    private void SetupGame()
     {
-        _columns = _level.columns;
-        _rows = _level.rows;
-        _pieceCount = _level.pieceCount;
+        levelManager.SetupLevel();
+        Random.InitState(levelManager.Seed);
     }
 
     public void StartGame()
     {
-        board.Initialize(_columns,_rows);
-        tangramManager.CreateTangram(_pieceCount);
+        board.Initialize(levelManager.BoardSize, levelManager.BoardSize);
+        tangramManager.CreateTangram(levelManager.PieceCount);
     }
 
 
