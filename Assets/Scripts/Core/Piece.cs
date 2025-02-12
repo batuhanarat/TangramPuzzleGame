@@ -38,6 +38,16 @@ public class Piece : MonoBehaviour
         {
             RemoveFromBoard();
         }
+
+        MoveToTop();
+    }
+
+    private void MoveToTop()
+    {
+        foreach (var triangle in unitTriangles)
+        {
+            triangle.SetSortingOrder(pieceManager.OnDraggedSortingOrder);
+        }
     }
 
     public void OnEndDrag()

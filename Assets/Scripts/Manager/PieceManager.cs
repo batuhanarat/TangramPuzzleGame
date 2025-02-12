@@ -76,7 +76,7 @@ public class PieceManager : IProvidable
         if(IsLevelCompleted)
         {
             levelManager.PrepareNextLevel();
-            Debug.Log("Kazandık !");
+            Debug.Log(" Level Won !");
         }
     }
 

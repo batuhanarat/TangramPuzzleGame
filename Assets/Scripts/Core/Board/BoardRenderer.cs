@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
@@ -110,6 +109,7 @@ public class BoardRenderer : MonoBehaviour, IProvidable
         block = _blocks[col, row];
         return true;
     }
+
     public void PlayWinAnimation(Action onFinished)
     {
         Sequence sequence = DOTween.Sequence();
