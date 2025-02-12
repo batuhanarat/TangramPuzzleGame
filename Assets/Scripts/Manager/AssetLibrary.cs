@@ -13,10 +13,15 @@ public class AssetLibrary : MonoBehaviour, IProvidable
     [SerializeField] private TriangleConfig triangleConfig;
     [SerializeField] private GameColorConfig gameColorConfig;
 
+    private Transform _blocksRoot;
+    private Transform _piecesRoot;
 
     private  void Awake()
     {
         ServiceProvider.Register(this);
+
+        _blocksRoot = new GameObject("---Blocks---").transform;
+        _piecesRoot = new GameObject("---Pieces---").transform;
     }
 
     public T GetAsset<T>(AssetType assetType) where T : class
@@ -29,8 +34,8 @@ public class AssetLibrary : MonoBehaviour, IProvidable
     {
         return assetType switch
         {
-            AssetType.Block => Instantiate(BlockPrefab),
-            AssetType.Piece => Instantiate(PiecePrefab),
+            AssetType.Block => Instantiate(BlockPrefab, _blocksRoot),
+            AssetType.Piece => Instantiate(PiecePrefab, _piecesRoot),
             AssetType.Board => Instantiate(BoardPrefab),
             AssetType.RightTriangle => Instantiate(triangleConfig.rightTrianglePrefab),
             AssetType.LeftTriangle => Instantiate(triangleConfig.leftTrianglePrefab),
