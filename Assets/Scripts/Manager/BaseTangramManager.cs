@@ -10,7 +10,7 @@ public abstract class BaseTangramManager : IProvidable, ITangramManager
 {
     #region Protected Variables
 
-        protected readonly GameColorConfig gameColorConfig;
+        protected  GameColorConfig gameColorConfig;
         protected Board board;
         protected IPieceManager pieceManager;
 
@@ -23,11 +23,12 @@ public abstract class BaseTangramManager : IProvidable, ITangramManager
         ServiceProvider.Register(this);
         pieceManager = ServiceProvider.PieceManager;
         board = ServiceProvider.Board;
-        gameColorConfig = ServiceProvider.GameColorConfig;
     }
 
     protected void CreateInitialPieces(int pieceCount)
     {
+        gameColorConfig = ServiceProvider.AssetLibrary.GetGameColorConfig();
+
         Color[] selectedColors = new Color[pieceCount];
         gameColorConfig.AvailableColors.Shuffle();
         Array.Copy(gameColorConfig.AvailableColors, selectedColors, pieceCount);
@@ -40,8 +41,7 @@ public abstract class BaseTangramManager : IProvidable, ITangramManager
 
     protected void CreateSinglePiece(Color color)
     {
-        var pieceGO = new GameObject("Piece");
-        var piece = pieceGO.AddComponent<Piece>();
+        var piece = ServiceProvider.AssetLibrary.GetAsset<Piece>(AssetType.Piece);
         var triangle = board.GetRandomTriangle();
         piece.Init(triangle, color);
         pieceManager.AddPiece(piece);

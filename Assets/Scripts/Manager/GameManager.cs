@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject BoardPrefab;
 
     #region Private Variables
         private BoardRenderer boardRenderer;
@@ -22,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        boardRenderer = Instantiate(BoardPrefab).GetComponent<BoardRenderer>();
+        boardRenderer = ServiceProvider.AssetLibrary.GetAsset<BoardRenderer>(AssetType.Board);
         GetLevelData();
         StartGame();
     }
@@ -38,7 +37,6 @@ public class GameManager : MonoBehaviour
     {
         board.Initialize(_columns,_rows);
         tangramManager.CreateTangram(_pieceCount);
-
         //tangramManager.CreateTangramWithAnimation(_pieceCount);
     }
 

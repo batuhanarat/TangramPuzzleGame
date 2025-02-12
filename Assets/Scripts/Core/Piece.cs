@@ -83,7 +83,6 @@ public class Piece : MonoBehaviour
 
         TryProgress();
 
-       //CoroutineRunner.Instance.StartCoroutine(TryProgressWithAnimation());
     }
 
 

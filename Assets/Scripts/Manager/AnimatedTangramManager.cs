@@ -9,6 +9,7 @@ public class AnimatedTangramManager : BaseTangramManager
         CreateInitialPieces(pieceCount);
         CoroutineRunner.Instance.StartCoroutine(ProgressPiecesUntilCompleteWithAnimation());
     }
+
     private IEnumerator ProgressPiecesUntilCompleteWithAnimation()
     {
         var piecesInProgress = pieceManager.GetActivePieces().ToList();

@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class TriangleFactory : MonoBehaviour, IProvidable
+public class TriangleFactory :  IProvidable
 {
     #region Private Variables
 
@@ -14,22 +15,26 @@ public class TriangleFactory : MonoBehaviour, IProvidable
 
     #endregion
 
-
-    public void Awake()
+    public TriangleFactory()
     {
         ServiceProvider.Register(this);
-        triangleConfig = ServiceProvider.TriangleConfig;
     }
 
-    public Triangle GetTriangleFromType(TriangleType type, Vector3 position)
+
+    public Triangle CreateTriangle(TriangleType type, Vector3 position)
     {
-        return type switch
+        AssetType assetType = type switch
         {
-            TriangleType.LEFT => Instantiate(triangleConfig.leftTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>(),
-            TriangleType.RIGHT => Instantiate(triangleConfig.rightTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>(),
-            TriangleType.UP => Instantiate(triangleConfig.upperTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>(),
-            TriangleType.DOWN => Instantiate(triangleConfig.bellowTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>(),
-            _ =>  Instantiate(triangleConfig.upperTrianglePrefab, position, Quaternion.identity).GetComponent<Triangle>()
+            TriangleType.LEFT => AssetType.LeftTriangle,
+            TriangleType.RIGHT => AssetType.RightTriangle,
+            TriangleType.UP => AssetType.UpTriangle,
+            TriangleType.DOWN => AssetType.DownTriangle,
+            _ => throw new NotImplementedException(),
         };
+
+        Triangle triangle = ServiceProvider.AssetLibrary.GetAsset<Triangle>(assetType);
+        triangle.transform.SetPositionAndRotation(position, Quaternion.identity);
+        return triangle;
     }
+
 }

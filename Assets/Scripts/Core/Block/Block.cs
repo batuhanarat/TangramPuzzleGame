@@ -109,15 +109,20 @@ public class Block
         var triangleDict = new Dictionary<TriangleType, Triangle>();
         foreach (TriangleType type in Enum.GetValues(typeof(TriangleType)))
         {
-            triangleDict[type] = CreateTriangle(type);
+            triangleDict[type] = CreateAndConfigTriangle(type);
         }
         return triangleDict;
     }
 
-    private Triangle CreateTriangle(TriangleType type)
+    private Triangle CreateAndConfigTriangle(TriangleType type)
     {
+        if(ServiceProvider.TriangleFactory == null)
+        {
+            Debug.Log("triangle factory null");
+        }
 
-        Triangle triangle = ServiceProvider.TriangleFactory.GetTriangleFromType(type, Position);
+
+        Triangle triangle = ServiceProvider.TriangleFactory.CreateTriangle(type, Position);
 
         SpriteRenderer sr = triangle.GetComponent<SpriteRenderer>();
         float scale = cellSize / sr.sprite.bounds.size.x;

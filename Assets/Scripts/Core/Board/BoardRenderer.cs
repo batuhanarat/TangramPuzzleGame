@@ -39,7 +39,6 @@ public class BoardRenderer : MonoBehaviour, IProvidable
         _blocks = blocks;
         InitializeBoard(columns, rows, blocks);
         _scaleAdjusted = transform.localScale;
-
     }
 
     private void InitializeBoard(int columns, int rows, Block[,] blocks)
@@ -78,16 +77,6 @@ public class BoardRenderer : MonoBehaviour, IProvidable
                 blocks[col,row] = block;
 
             }
-        }
-    }
-
-    private void ScaleCellToSize(GameObject cell, float targetSize)
-    {
-        SpriteRenderer cellSprite = cell.GetComponent<SpriteRenderer>();
-        if (cellSprite != null && cellSprite.sprite != null)
-        {
-            float originalCellSize = cellSprite.sprite.bounds.size.x;
-            cell.transform.localScale = Vector3.one * (targetSize / originalCellSize);
         }
     }
 
