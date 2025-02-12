@@ -35,7 +35,6 @@ public class Block
 
     #endregion
 
-
     public Block(int x, int y, Vector3 boardCenter, float cellSize, int gridSize)
     {
         board = ServiceProvider.Board;
@@ -44,10 +43,16 @@ public class Block
         this.y = y;
         coordinates = new Vector2Int(x, y);
         this.cellSize = cellSize;
-
         Position = CalculateWorldPosition(boardCenter, gridSize);
+        Render(Position, cellSize);
         triangleOccupancy = InitializeTriangleOccupancy();
         triangles = InitializeTriangles();
+    }
+
+    private void Render(Vector3 position, float cellSize)
+    {
+        var blockRenderer = ServiceProvider.AssetLibrary.GetAsset<BlockRenderer>(AssetType.Block);
+        blockRenderer.Configure(position,cellSize);
     }
 
     public void RemoveFromBlock(Triangle triangle)

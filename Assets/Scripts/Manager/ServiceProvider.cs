@@ -7,6 +7,7 @@ public static class ServiceProvider
 {
     private static readonly Dictionary<Type, IProvidable> _registerDictionary = new();
 
+    public static AssetLibrary AssetLibrary => GetManager<AssetLibrary>();
     public static BoardRenderer BoardRenderer => GetManager<BoardRenderer>();
     public static TriangleFactory TriangleFactory => GetManager<TriangleFactory>();
 

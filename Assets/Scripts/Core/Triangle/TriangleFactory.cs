@@ -19,7 +19,6 @@ public class TriangleFactory : MonoBehaviour, IProvidable
     {
         ServiceProvider.Register(this);
         triangleConfig = ServiceProvider.TriangleConfig;
-
     }
 
     public Triangle GetTriangleFromType(TriangleType type, Vector3 position)

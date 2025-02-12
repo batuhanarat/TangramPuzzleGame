@@ -23,7 +23,7 @@ public class PieceManager : IProvidable
         };
     #endregion
 
-    #region  Properties
+    #region Properties
         public int InPlacedSortingOrder { get =>  -1 ;}
         public bool IsLevelCompleted { get => _placedPieceCounterOnBoard == activePieces.Count; }
         public int OnDraggedSortingOrder { get =>  activePieces.Count + 1; }
