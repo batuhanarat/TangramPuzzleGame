@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
@@ -104,6 +105,7 @@ public class Piece : MonoBehaviour
         }
 
         IsOnTheBoard = true;
+        PlayPlacedAnimation();
         pieceManager.OnPiecePlaced();
     }
 
@@ -181,6 +183,24 @@ public class Piece : MonoBehaviour
         board.RemoveFromAvailableTriangels(triangletoCapture);
         callback(true);
     }
+    public void PlayPlacedAnimation()
+    {
+        Sequence sequence = DOTween.Sequence();
+
+        foreach (var triangle in unitTriangles)
+        {
+            var spriteRenderer = triangle.GetComponent<SpriteRenderer>();
+            Color originalColor = spriteRenderer.color;
+            Color transparentColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
+
+            sequence.Join(
+                spriteRenderer.DOColor(transparentColor, 0.15f)
+                    .SetEase(Ease.InOutQuad)
+                    .SetLoops(2, LoopType.Yoyo)
+            );
+        }
+    }
+
 
     public void SetPosition(Vector3 position)
     {

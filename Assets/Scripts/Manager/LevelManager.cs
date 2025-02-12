@@ -10,9 +10,16 @@ public class LevelManager : IProvidable
         ServiceProvider.Register(this);
         level = ServiceProvider.Level;
     }
-    public void LoadNextLevel()
+    public void PrepareNextLevel()
     {
         level.NextLevel();
+        ServiceProvider.BoardRenderer.PlayWinAnimation(
+            LoadNextLevel
+            );
+    }
+
+    private void LoadNextLevel()
+    {
         SceneManager.LoadScene(0);
     }
 }

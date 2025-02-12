@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 public class BoardRenderer : MonoBehaviour, IProvidable
@@ -7,6 +10,7 @@ public class BoardRenderer : MonoBehaviour, IProvidable
     private float widthPercentage = 0.8f;
     private float heightPercentage = 0.4f;
     private float topOffsetPercentage = 0.1f;
+    private Vector3 _scaleAdjusted;
 
     public float CellSize { get; private set; }
     public Vector3 BoardCenter { get; private set; }
@@ -22,6 +26,8 @@ public class BoardRenderer : MonoBehaviour, IProvidable
         _gridSize = columns;
         _blocks = blocks;
         InitializeBoard(columns, rows, blocks);
+        _scaleAdjusted = transform.localScale;
+
     }
 
     private void InitializeBoard(int columns, int rows, Block[,] blocks)
@@ -89,6 +95,17 @@ public class BoardRenderer : MonoBehaviour, IProvidable
 
         block = _blocks[col, row];
         return true;
+    }
+    public void PlayWinAnimation(Action onFinished)
+    {
+        Sequence sequence = DOTween.Sequence();
+
+        sequence.Append(transform.DOScale(transform.localScale * 1.2f, 0.2f).SetEase(Ease.OutQuad))
+                .Append(transform.DOScale(_scaleAdjusted, 0.2f).SetEase(Ease.InQuad)).OnComplete(
+                    () => {
+                        onFinished();
+                    }
+                );
     }
 
 }

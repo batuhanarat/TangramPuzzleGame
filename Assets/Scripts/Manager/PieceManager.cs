@@ -75,7 +75,7 @@ public class PieceManager : IProvidable
         _placedPieceCounterOnBoard++;
         if(IsLevelCompleted)
         {
-            levelManager.LoadNextLevel();
+            levelManager.PrepareNextLevel();
             Debug.Log("Kazandık !");
         }
     }
