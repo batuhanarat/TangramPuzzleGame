@@ -1,6 +1,11 @@
 using UnityEngine.SceneManagement;
 
-public class LevelManager : IProvidable
+public interface ILevelManager
+{
+    public void PrepareNextLevel();
+}
+
+public class LevelManager : IProvidable , ILevelManager
 {
 
     private LevelSo level;

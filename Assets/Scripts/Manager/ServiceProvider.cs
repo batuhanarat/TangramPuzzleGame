@@ -12,11 +12,10 @@ public static class ServiceProvider
     public static TriangleFactory TriangleFactory => GetManager<TriangleFactory>();
 
     public static Board Board => GetManager<Board>();
-    public static PieceManager PieceManager => GetManager<PieceManager>();
-    public static LevelManager LevelManager => GetManager<LevelManager>();
-    public static TangramManager TangramManager => GetManager<TangramManager>();
-    public static SpawnManager SpawnManager => GetManager<SpawnManager>();
-
+    public static IPieceManager PieceManager => GetManager<PieceManager>();
+    public static ILevelManager LevelManager => GetManager<LevelManager>();
+    public static ITangramManager TangramManager => GetManager<BaseTangramManager>();
+    public static ISpawnManager SpawnManager => GetManager<SpawnManager>();
     public static GameColorConfig GameColorConfig;
     public static LevelSo Level;
     public static TriangleConfig TriangleConfig;
@@ -25,20 +24,6 @@ public static class ServiceProvider
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void InitializeServiceProvider()
     {
-        /*
-        SceneManager.sceneLoaded += (_, _) =>
-        {
-            if(GameConfig == null) {
-                GameConfig = Resources.Load<GameConfig>("ScriptableObjects/GameConfigSO");
-            }
-            //Self registered.
-            _ = new UIManager();
-            _ = new LevelManager();
-            _ = new MoveManager();
-            _ = new ScoreManager();
-        };
-        */
-
 
         if(Level == null) {
             Level = Resources.Load<LevelSo>("ScriptableObjects/LevelConfig");
@@ -57,17 +42,17 @@ public static class ServiceProvider
 
         //Self registered.
 
-            _ = new Board();
-            _ = new LevelManager();
-            _ = new SpawnManager();
-            _ = new PieceManager();
-            _ = new TangramManager();
+        _ = new Board();
+        _ = new LevelManager();
+        _ = new SpawnManager();
+        _ = new PieceManager();
+        _ = new InstantTangramManager();
 
-            SceneManager.sceneLoaded += (_, _) =>
-            {
-                Board.Reset();
-                PieceManager.Reset();
-            };
+        SceneManager.sceneLoaded += (_, _) =>
+        {
+            Board.Reset();
+            PieceManager.Reset();
+        };
 
     }
 

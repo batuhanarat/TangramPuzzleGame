@@ -1,21 +1,37 @@
 using System.Collections.Generic;
 using UnityEngine;
-public class PieceManager : IProvidable
+
+
+public interface IPieceManager
+{
+    public int InPlacedSortingOrder { get; }
+    public int OnDraggedSortingOrder { get; }
+
+    public void AddPiece(Piece piece);
+    public IReadOnlyList<Piece> GetActivePieces();
+    public void OnPiecePlaced();
+    public void OnPieceRemoved();
+    public void ScatterPieces();
+    public void ArrangeSortingOrders();
+    public void Reset();
+}
+
+public class PieceManager : IProvidable, IPieceManager
 {
     #region Private Variables
 
         private List<Piece> activePieces = new();
         private int _placedPieceCounterOnBoard;
-        private LevelManager levelManager;
-        private SpawnManager spawnManager;
+        private ILevelManager levelManager;
+        private ISpawnManager spawnManager;
 
     #endregion
 
     #region Properties
 
         public int InPlacedSortingOrder { get =>  -1 ;}
-        public bool IsLevelCompleted { get => _placedPieceCounterOnBoard == activePieces.Count; }
         public int OnDraggedSortingOrder { get =>  activePieces.Count + 1; }
+        private bool IsLevelCompleted { get => _placedPieceCounterOnBoard == activePieces.Count; }
 
     #endregion
 
@@ -37,9 +53,8 @@ public class PieceManager : IProvidable
         return activePieces.AsReadOnly();
     }
 
-    public void ShufflePieces()
+    public void ScatterPieces()
     {
-
         for(int i = 0 ; i < activePieces.Count ; i++)
         {
             var piece = activePieces[i];

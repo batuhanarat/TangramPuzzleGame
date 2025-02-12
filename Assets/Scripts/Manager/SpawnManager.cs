@@ -1,7 +1,12 @@
 
 using UnityEngine;
 
-public class SpawnManager : IProvidable
+public interface ISpawnManager
+{
+    public Vector3 GetSpawnPoint();
+}
+
+public class SpawnManager : IProvidable, ISpawnManager
 {
 
     #region Private Variables

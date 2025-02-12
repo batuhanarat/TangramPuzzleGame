@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     #region Private Variables
         private BoardRenderer boardRenderer;
         private Board board;
-        private TangramManager tangramManager;
+        private ITangramManager tangramManager;
         private int _columns,_rows, _pieceCount;
         private LevelSo _level;
 

@@ -11,7 +11,7 @@ public class Piece : MonoBehaviour
         private List<Triangle> unitTriangles;
         private List<Triangle> moveableTriangles = new();
         private int _sortingOrder;
-        private PieceManager pieceManager;
+        private IPieceManager pieceManager;
         private Board board;
         private bool _isLocked;
         public Vector3 InitialPositionOffset;
