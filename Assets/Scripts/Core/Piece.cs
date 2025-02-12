@@ -14,6 +14,8 @@ public class Piece : MonoBehaviour
         private PieceManager pieceManager;
         private Board board;
         private bool _isLocked;
+        public Vector3 InitialPositionOffset;
+
 
     #endregion
 
@@ -76,6 +78,7 @@ public class Piece : MonoBehaviour
         if (firstTriangle.transform != null && this.transform != null)
         {
             firstTriangle.transform.parent = this.transform;
+            InitialPositionOffset = firstTriangle.transform.localPosition;
         }
 
         TryProgress();
@@ -226,5 +229,6 @@ public class Piece : MonoBehaviour
     {
         transform.position = position;
     }
+
 
 }

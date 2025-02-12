@@ -6,27 +6,18 @@ public class PieceManager : IProvidable
         private List<Piece> activePieces = new();
         private int _placedPieceCounterOnBoard;
         private LevelManager levelManager;
-        private List<Vector3> _spawnPositions = new List<Vector3>
-        {
-            new(0.615835726f, -3.57771254f, 0f),
-            new(-2.17008781f, -5.54252195f, 0f),
-            new (1.73020518f, -6.26099682f, 0f),
-            new (1.9941349f, -3.84164238f, 0f),
-            new (0.615835726f, -3.57771254f, 0f),
-            new (-2.17008781f, -5.54252195f, 0f),
-            new (1.73020518f, -6.26099682f, 0f),
-            new (1.9941349f, -3.84164238f, 0f),
-            new (0.615835726f, -3.57771254f, 0f),
-            new (-2.17008781f, -5.54252195f, 0f),
-            new (1.73020518f, -6.26099682f, 0f),
-            new (1.9941349f, -3.84164238f, 0f)
-        };
+        public Bounds spawnBounds;
+        public Bounds innerSpawnBounds;
+
+        private bool IsSpawnBoundsInitialized;
     #endregion
 
     #region Properties
+
         public int InPlacedSortingOrder { get =>  -1 ;}
         public bool IsLevelCompleted { get => _placedPieceCounterOnBoard == activePieces.Count; }
         public int OnDraggedSortingOrder { get =>  activePieces.Count + 1; }
+
     #endregion
 
 
@@ -41,6 +32,41 @@ public class PieceManager : IProvidable
         activePieces.Add(piece);
     }
 
+    private void InitializeSpawnArea()
+    {
+        SpriteRenderer boardSprite =  ServiceProvider.BoardRenderer.GetComponent<SpriteRenderer>();
+        Vector2 boardSize = boardSprite.bounds.size;
+        Vector3 boardPosition =  ServiceProvider.BoardRenderer.transform.position;
+
+        float spawnAreaHeight = boardSize.y;
+        float spawnAreaWidth = boardSize.x;
+
+        float offsetY = -(boardSize.y / 2 + boardSize.y * 0.1f + spawnAreaHeight / 2);
+        Vector3 spawnAreaCenter = boardPosition + new Vector3(0, offsetY, 0);
+
+        spawnBounds = new Bounds(spawnAreaCenter, new Vector3(spawnAreaWidth, spawnAreaHeight, 1));
+
+        float innerWidth = spawnAreaWidth / 2;
+        float innerHeight = spawnAreaHeight / 2;
+
+        innerSpawnBounds = new Bounds(spawnAreaCenter, new Vector3(innerWidth, innerHeight, 1));
+
+
+    }
+
+    public Vector3 GetSpawnPoint()
+    {
+        if(!IsSpawnBoundsInitialized){
+            InitializeSpawnArea();
+            IsSpawnBoundsInitialized = true;
+        }
+
+        float randomX = Random.Range(innerSpawnBounds.min.x, innerSpawnBounds.max.x);
+        float randomY = Random.Range(innerSpawnBounds.min.y, innerSpawnBounds.max.y);
+
+        return new Vector3(randomX, randomY, 0);
+    }
+
     public IReadOnlyList<Piece> GetActivePieces()
     {
         return activePieces.AsReadOnly();
@@ -51,9 +77,12 @@ public class PieceManager : IProvidable
 
         for(int i = 0 ; i < activePieces.Count ; i++)
         {
-            var zValues = activePieces[i].transform.position.z;
-            activePieces[i].transform.position = _spawnPositions[i];
-            activePieces[i].transform.position = activePieces[i].transform.position  + new Vector3(0,0,zValues);
+            var piece = activePieces[i];
+
+            var zValues = piece.transform.position.z;
+            Vector3 spawnPoint = GetSpawnPoint();
+            piece.SetPosition(spawnPoint - piece.InitialPositionOffset);
+            piece.transform.position += new Vector3(0,0,zValues);
         }
     }
 
@@ -85,5 +114,7 @@ public class PieceManager : IProvidable
         activePieces.Clear();
         _placedPieceCounterOnBoard = 0;
     }
+
+
 
 }
