@@ -7,16 +7,14 @@ public class Piece : MonoBehaviour
 {
     #region Private Variables
 
-        private Color pieceColor;
-        private List<Triangle> unitTriangles;
-        private List<Triangle> moveableTriangles = new();
+        private readonly List<Triangle> _unitTriangles = new();
+        private readonly List<Triangle> _moveableTriangles = new();
         private int _sortingOrder;
-        private IPieceManager pieceManager;
-        private Board board;
+        private Color _pieceColor;
         private bool _isLocked;
-        public Vector3 InitialPositionOffset;
-
-
+        private bool _isAnimationPlaying;
+        private IPieceManager _pieceManager;
+        private Board _board;
     #endregion
 
     #region Properties
@@ -24,13 +22,15 @@ public class Piece : MonoBehaviour
         public bool CanBeDragged  => !_isLocked;
         public Vector3 Position { get => transform.position; }
         public bool IsOnTheBoard = false;
+        public Vector3 InitialPositionOffset { get; private set; }
+
 
     #endregion
 
     private void Awake()
     {
-        board = ServiceProvider.Board;
-        pieceManager = ServiceProvider.PieceManager;
+        _board = ServiceProvider.Board;
+        _pieceManager = ServiceProvider.PieceManager;
     }
 
 
@@ -46,9 +46,9 @@ public class Piece : MonoBehaviour
 
     private void MoveToTop()
     {
-        foreach (var triangle in unitTriangles)
+        foreach (var triangle in _unitTriangles)
         {
-            triangle.SetSortingOrder(pieceManager.OnDraggedSortingOrder);
+            triangle.SetSortingOrder(_pieceManager.OnDraggedSortingOrder);
         }
     }
 
@@ -67,13 +67,10 @@ public class Piece : MonoBehaviour
 
     public void Init(Triangle firstTriangle, Color color)
     {
-        this.pieceColor = color;
-        unitTriangles = new()
-        {
-            firstTriangle
-        };
+        this._pieceColor = color;
+        _unitTriangles.Add(firstTriangle);
         firstTriangle.ChangeColor(color,this);
-        board.RemoveFromAvailableTriangels(firstTriangle);
+        _board.RemoveFromAvailableTriangels(firstTriangle);
 
         if (firstTriangle.transform != null && this.transform != null)
         {
@@ -88,18 +85,18 @@ public class Piece : MonoBehaviour
 
     private void RemoveFromBoard()
     {
-        foreach(var unit in unitTriangles)
+        foreach(var unit in _unitTriangles)
         {
             unit.ExtractFromBoard();
         }
         IsOnTheBoard = false;
-        pieceManager.OnPieceRemoved();
+        _pieceManager.OnPieceRemoved();
     }
 
 
     private bool TryPlace()
     {
-        foreach(var triangle in unitTriangles)
+        foreach(var triangle in _unitTriangles)
         {
             if(!triangle.CanPlace())
             {
@@ -111,21 +108,21 @@ public class Piece : MonoBehaviour
 
     private void OnPlacedSuccessful()
     {
-        foreach(var triangle in unitTriangles)
+        foreach(var triangle in _unitTriangles)
         {
             triangle.PlaceToBlock();
-            triangle.SetSortingOrder(pieceManager.InPlacedSortingOrder);
+            triangle.SetSortingOrder(_pieceManager.InPlacedSortingOrder);
         }
 
         IsOnTheBoard = true;
         PlayPlacedAnimation();
-        pieceManager.OnPiecePlaced();
+        _pieceManager.OnPiecePlaced();
     }
 
 
     private void OnPlacedFailed()
     {
-        foreach(var triangle in unitTriangles)
+        foreach(var triangle in _unitTriangles)
         {
             triangle.SetInitialSortingOrder();
         }
@@ -136,14 +133,14 @@ public class Piece : MonoBehaviour
     private void InitMovableTriangles()
     {
 
-        foreach( var triangle in unitTriangles)
+        foreach( var triangle in _unitTriangles)
         {
             var neighbors = triangle.GetAllNeighbors();
             foreach(var neighbor in neighbors)
             {
                 if(neighbor.IsAvailableToCapture)
                 {
-                    moveableTriangles.Add(neighbor);
+                    _moveableTriangles.Add(neighbor);
                 }
             }
         }
@@ -151,10 +148,10 @@ public class Piece : MonoBehaviour
 
     public bool TryProgress()
     {
-        moveableTriangles.Clear();
+        _moveableTriangles.Clear();
         InitMovableTriangles();
 
-        if (moveableTriangles.Count == 0)
+        if (_moveableTriangles.Count == 0)
         {
             return false;
         }
@@ -167,10 +164,10 @@ public class Piece : MonoBehaviour
     public IEnumerator TryProgressWithAnimation()
     {
 
-        moveableTriangles.Clear();
+        _moveableTriangles.Clear();
         InitMovableTriangles();
 
-        if (moveableTriangles.Count == 0)
+        if (_moveableTriangles.Count == 0)
         {
             yield  break;
         }
@@ -181,12 +178,12 @@ public class Piece : MonoBehaviour
 
     private void Capture()
     {
-        int index = UnityEngine.Random.Range(0, moveableTriangles.Count);
-        var triangletoCapture = moveableTriangles[index];
+        int index = UnityEngine.Random.Range(0, _moveableTriangles.Count);
+        var triangletoCapture = _moveableTriangles[index];
 
-        unitTriangles.Add(triangletoCapture);
-        triangletoCapture.ChangeColor(pieceColor,this);
-        board.RemoveFromAvailableTriangels(triangletoCapture);
+        _unitTriangles.Add(triangletoCapture);
+        triangletoCapture.ChangeColor(_pieceColor,this);
+        _board.RemoveFromAvailableTriangels(triangletoCapture);
         if (triangletoCapture.transform != null && this.transform != null)
         {
             triangletoCapture.transform.parent = this.transform;
@@ -197,7 +194,7 @@ public class Piece : MonoBehaviour
     public void SetSortingOrder(int order)
     {
         _sortingOrder = order;
-        foreach(var unit in unitTriangles)
+        foreach(var unit in _unitTriangles)
         {
             unit.SetSortingOrder(order);
             unit.InitialSortingOrder = order;
@@ -207,13 +204,16 @@ public class Piece : MonoBehaviour
 
     public void PlayPlacedAnimation()
     {
+        if (_isAnimationPlaying) return;
+
+        _isAnimationPlaying = true;
         Sequence sequence = DOTween.Sequence();
 
-        foreach (var triangle in unitTriangles)
+        foreach (var triangle in _unitTriangles)
         {
             var spriteRenderer = triangle.GetComponent<SpriteRenderer>();
             Color originalColor = spriteRenderer.color;
-            Color transparentColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
+            Color transparentColor = new(originalColor.r, originalColor.g, originalColor.b, 0f);
 
             sequence.Join(
                 spriteRenderer.DOColor(transparentColor, 0.1f)
@@ -221,6 +221,8 @@ public class Piece : MonoBehaviour
                     .SetLoops(2, LoopType.Yoyo)
             );
         }
+
+        sequence.OnComplete(() => _isAnimationPlaying = false);
     }
 
 
