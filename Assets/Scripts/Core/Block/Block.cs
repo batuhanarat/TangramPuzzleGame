@@ -43,6 +43,7 @@ public class Block
         this.y = y;
         coordinates = new Vector2Int(x, y);
         this.cellSize = cellSize;
+
         Position = CalculateWorldPosition(boardCenter, gridSize);
         Render(Position, cellSize);
         triangleOccupancy = InitializeTriangleOccupancy();

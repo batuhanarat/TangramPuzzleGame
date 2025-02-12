@@ -5,16 +5,29 @@ using UnityEngine;
 
 public class BoardRenderer : MonoBehaviour, IProvidable
 {
-    [Header("Board Settings")]
-    private int _gridSize;
-    private float widthPercentage = 0.8f;
-    private float heightPercentage = 0.4f;
-    private float topOffsetPercentage = 0.1f;
-    private Vector3 _scaleAdjusted;
 
-    public float CellSize { get; private set; }
-    public Vector3 BoardCenter { get; private set; }
-    private Block[,] _blocks;
+    [SerializeField] private Block blockPrefab;
+
+    [Header("Board Settings")]
+
+    #region Private Variable
+
+        private int _gridSize;
+        private float widthPercentage = 0.8f;
+        private float heightPercentage = 0.4f;
+        private float topOffsetPercentage = 0.1f;
+        private Vector3 _scaleAdjusted;
+        private Block[,] _blocks;
+
+    #endregion
+
+    #region Properties
+
+        public float CellSize { get; private set; }
+        public Vector3 BoardCenter { get; private set; }
+
+    #endregion
+
 
     private void Awake()
     {
@@ -61,6 +74,7 @@ public class BoardRenderer : MonoBehaviour, IProvidable
         {
             for(int row = 0 ; row < rows ; row++)
             {
+
                 var block = new Block(col, row, BoardCenter, CellSize, _gridSize );
                 blocks[col,row] = block;
 

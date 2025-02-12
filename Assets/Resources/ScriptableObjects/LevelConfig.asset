@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67eb5eda2f6e5479d813c8a21ea19a07, type: 3}
   m_Name: LevelConfig
   m_EditorClassIdentifier: 
-  rows: 4
-  columns: 4
-  seed: 26
-  pieceCount: 5
+  rows: 6
+  columns: 6
+  seed: 38
+  pieceCount: 6

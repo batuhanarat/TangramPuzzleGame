@@ -3,64 +3,36 @@ using UnityEngine;
 
 public class Triangle : MonoBehaviour
 {
-    [SerializeField] private TriangleType triangleType;
-    [SerializeField] private SpriteRenderer TriangleRenderer;
+    #region Private Variables
 
-    public TriangleType TriangleType { get => triangleType; }
+        public TriangleType TriangleType { get => triangleType; }
+        private List<Triangle> _neighbors = new();
+        private Vector2Int coordinates;
+        private Block blockToPlace;
+        private bool _isOccupied = false;
 
-    private List<Triangle> _neighbors = new();
-    private Vector2Int coordinates;
+    #endregion
 
-    private bool _isOccupied = false;
-    public int InitialSortingOrder;
-    private Vector3 _offset;
-    private Vector3 mousePositionOnInputFinishedWithOffset;
-    private Vector3 mousePositionOnInputFinished;
-    private Vector3 mousePosition ;
-    private bool _isDragging = false;
-    private Block blockToPlace;
-    [SerializeField] private Piece _piece;
+    #region Serialized Variables
 
-    public bool IsAvailableToCapture  => !_isOccupied ;
+        [SerializeField] private TriangleType triangleType;
+        [SerializeField] private SpriteRenderer TriangleRenderer;
+        [SerializeField] private Piece _piece;
 
-/*
-    public void OnMouseDown()
+    #endregion
+
+    #region Properties
+
+        public int InitialSortingOrder { get; set; }
+        public bool IsAvailableToCapture  => !_isOccupied ;
+
+    #endregion
+
+    public void Init(int x, int y)
     {
-        if (_piece == null) return;
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0;
-        _offset = _piece.transform.position - mousePosition;
-
-        _isDragging = true;
-
+        coordinates = new Vector2Int(x,y);
     }
-    public void OnMouseDrag()
-    {
-        if (_piece == null || !_isDragging) return;
 
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0;
-        _piece.SetPosition(mousePosition + _offset);
-
-    }
-    public void OnMouseUp()
-    {
-        _isDragging = false;
-        mousePositionOnInputFinishedWithOffset = mousePosition + _offset;
-        mousePositionOnInputFinished = mousePosition;
-
-        if(_piece.IsOnTheBoard)
-        {
-            _piece.RemoveFromBoard();
-        }
-
-        if(_piece.TryPlace()) {
-            _piece.OnPlacedSuccessful();
-        } else{
-            _piece.OnPlacedFailed();
-        }
-    }
-    */
     public void ExtractFromBoard()
     {
         blockToPlace.RemoveFromBlock(this);
@@ -96,12 +68,6 @@ public class Triangle : MonoBehaviour
             blockToPlace.OccupyTriangleInBlock(this);
         }
     }
-
-    public void Init(int x, int y)
-    {
-        coordinates = new Vector2Int(x,y);
-    }
-
 
     public void ChangeColor(Color color, Piece piece)
     {
