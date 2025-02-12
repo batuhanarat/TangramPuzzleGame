@@ -217,7 +217,7 @@ public class Piece : MonoBehaviour
             Color transparentColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
 
             sequence.Join(
-                spriteRenderer.DOColor(transparentColor, 0.15f)
+                spriteRenderer.DOColor(transparentColor, 0.1f)
                     .SetEase(Ease.InOutQuad)
                     .SetLoops(2, LoopType.Yoyo)
             );

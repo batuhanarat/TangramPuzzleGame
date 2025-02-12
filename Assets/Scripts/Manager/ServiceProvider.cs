@@ -15,7 +15,7 @@ public static class ServiceProvider
     public static PieceManager PieceManager => GetManager<PieceManager>();
     public static LevelManager LevelManager => GetManager<LevelManager>();
     public static TangramManager TangramManager => GetManager<TangramManager>();
-
+    public static SpawnManager SpawnManager => GetManager<SpawnManager>();
 
     public static GameColorConfig GameColorConfig;
     public static LevelSo Level;
@@ -59,6 +59,7 @@ public static class ServiceProvider
 
             _ = new Board();
             _ = new LevelManager();
+            _ = new SpawnManager();
             _ = new PieceManager();
             _ = new TangramManager();
 
