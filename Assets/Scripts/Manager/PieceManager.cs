@@ -48,20 +48,19 @@ public class PieceManager : IProvidable
 
     public void ShufflePieces()
     {
+
         for(int i = 0 ; i < activePieces.Count ; i++)
         {
+            var zValues = activePieces[i].transform.position.z;
             activePieces[i].transform.position = _spawnPositions[i];
+            activePieces[i].transform.position = activePieces[i].transform.position  + new Vector3(0,0,zValues);
         }
     }
 
     public void ArrangeSortingOrders()
     {
-
-        Debug.Log("active Pieces count: " +activePieces.Count);
-
         for (int i = 0; i < activePieces.Count; i++)
         {
-            Debug.Log("setting sorting order for piece" + i);
             activePieces[i].SetSortingOrder(i);
         }
     }

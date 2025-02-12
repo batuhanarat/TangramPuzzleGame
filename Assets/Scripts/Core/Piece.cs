@@ -14,7 +14,6 @@ public class Piece : MonoBehaviour
         private PieceManager pieceManager;
         private Board board;
         private bool _isLocked;
-        private bool _isPlaced;
 
     #endregion
 
@@ -35,7 +34,7 @@ public class Piece : MonoBehaviour
 
     public void OnStartDrag()
     {
-        if (_isPlaced)
+        if (IsOnTheBoard)
         {
             RemoveFromBoard();
         }
@@ -168,6 +167,7 @@ public class Piece : MonoBehaviour
             unit.SetSortingOrder(order);
             unit.InitialSortingOrder = order;
         }
+        transform.position = transform.position - new Vector3(0,0,order);
     }
 
     private IEnumerator CaptureCoroutine(Action<bool> callback)

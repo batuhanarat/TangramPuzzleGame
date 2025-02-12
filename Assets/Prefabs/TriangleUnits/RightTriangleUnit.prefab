@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b89cd3101c301495eb07f0578e916871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triangleType: 0
+  triangleType: 1
   TriangleRenderer: {fileID: 2305426786852710548}
   InitialSortingOrder: 0
   _piece: {fileID: 0}

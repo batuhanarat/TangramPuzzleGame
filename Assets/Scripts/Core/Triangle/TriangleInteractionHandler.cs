@@ -51,7 +51,7 @@ public class TriangleInteractionHandler : MonoBehaviour
 
     private bool CanStartDrag()
     {
-        ownerPiece = GetComponentInParent<Piece>();
+        ownerPiece = triangle.GetPiece();
         return ownerPiece != null && ownerPiece.CanBeDragged;
     }
 

@@ -130,5 +130,10 @@ public class Triangle : MonoBehaviour
         return _neighbors;
     }
 
+    public Piece GetPiece()
+    {
+        return _piece;
+    }
+
 
 }
