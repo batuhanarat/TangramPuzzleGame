@@ -41,6 +41,7 @@ public class LevelManager : IProvidable , ILevelManager
     {
         _level = _levelReader.LoadLevel();
 
+
         if (!ValidateLevel(_level))
         {
             Debug.LogError("Level validation failed.");

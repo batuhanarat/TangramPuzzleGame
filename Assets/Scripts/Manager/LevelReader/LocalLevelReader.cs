@@ -35,7 +35,6 @@ public class LocalLevelReader : BaseLevelReader, ILevelReader
         else
         {
             CurrentLevel = PlayerPrefs.GetInt(LEVEL_KEY);
-            Debug.Log("Current Level" + CurrentLevel);
         }
     }
 
@@ -56,6 +55,8 @@ public class LocalLevelReader : BaseLevelReader, ILevelReader
 
     public override Level LoadLevel()
     {
+        Debug.Log("Current Level" + CurrentLevel);
+
         string levelName = "level_"+CurrentLevel.ToString("D2");
 
         TextAsset levelFile = Resources.Load<TextAsset>($"Levels/{levelName}");
