@@ -35,6 +35,7 @@ public class LocalLevelReader : BaseLevelReader, ILevelReader
         else
         {
             CurrentLevel = PlayerPrefs.GetInt(LEVEL_KEY);
+            Debug.Log("Current Level" + CurrentLevel);
         }
     }
 
@@ -47,6 +48,9 @@ public class LocalLevelReader : BaseLevelReader, ILevelReader
     public override void PrepareNextLevel()
     {
         CurrentLevel = (CurrentLevel + 1) % (TOTAL_LEVEL_COUNT+1);
+        if(CurrentLevel == 0) {
+            CurrentLevel = 1;
+        }
         PersistLevel();
     }
 

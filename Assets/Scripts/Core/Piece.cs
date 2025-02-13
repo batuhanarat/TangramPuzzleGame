@@ -72,7 +72,7 @@ public class Piece : MonoBehaviour
     {
         this._pieceColor = color;
         _unitTriangles.Add(firstTriangle);
-        firstTriangle.ChangeColor(color,this);
+        firstTriangle.OccupyTriangle(color,this);
         _board.RemoveFromAvailableTriangels(firstTriangle);
 
         if (firstTriangle.transform != null && this.transform != null)
