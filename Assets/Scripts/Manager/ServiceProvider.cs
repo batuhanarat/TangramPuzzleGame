@@ -24,38 +24,54 @@ public static class ServiceProvider
     public static void InitializeServiceProvider()
     {
 
+        InitializeConfiguration();
+        InitializeCoreServices();
+        RegisterSceneEvents();
 
+    }
+
+    private static void InitializeConfiguration()
+    {
         GameConfig = Resources.Load<GameConfig>("ScriptableObjects/GameConfig");
+        if (GameConfig == null)
+            Debug.LogError("Failed to load GameConfig!");
+    }
 
+    private static void InitializeCoreServices()
+    {
         _ = new Board();
-
-        if(GameConfig.ShouldCreateLevelDynamically)
-        {
-            _ = new DynamicLevelReader();
-        } else {
-            _ = new LocalLevelReader();
-        }
-
+        CreateLevelReaderInstance();
         _ = new LevelManager();
         _ = new SpawnManager();
         _ = new PieceManager();
-
-        if(GameConfig.IsPieceCreationAnimated)
-        {
-            _ = new AnimatedTangramManager();
-        } else {
-            _ = new InstantTangramManager();
-        }
-
+        CreateTangramManagerInstance();
         _ = new TriangleFactory();
+    }
 
 
-        SceneManager.sceneLoaded += (_, _) =>
-        {
-            Board.Reset();
-            PieceManager.Reset();
-        };
+    private static ILevelReader CreateLevelReaderInstance()
+    {
+        return GameConfig.ShouldCreateLevelDynamically
+            ? new DynamicLevelReader()
+            : new LocalLevelReader();
+    }
 
+    private static ITangramManager CreateTangramManagerInstance()
+    {
+        return GameConfig.IsPieceCreationAnimated
+            ? new AnimatedTangramManager()
+            : new InstantTangramManager();
+    }
+
+    private static void RegisterSceneEvents()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Board?.Reset();
+        PieceManager?.Reset();
     }
 
     private static T GetManager<T>() where T : class, IProvidable

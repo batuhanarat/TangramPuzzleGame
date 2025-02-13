@@ -29,9 +29,14 @@ public abstract class BaseTangramManager : IProvidable, ITangramManager
     {
         gameColorConfig = ServiceProvider.AssetLibrary.GetGameColorConfig();
 
+        Color[] allColors = new Color[gameColorConfig.AvailableColors.Length];
+        Array.Copy(gameColorConfig.AvailableColors, allColors, gameColorConfig.AvailableColors.Length);
+
+        allColors.Shuffle();
+
         Color[] selectedColors = new Color[pieceCount];
-        gameColorConfig.AvailableColors.Shuffle();
-        Array.Copy(gameColorConfig.AvailableColors, selectedColors, pieceCount);
+        Array.Copy(allColors, selectedColors, pieceCount);
+
 
         for (int i = 0; i < pieceCount; i++)
         {
