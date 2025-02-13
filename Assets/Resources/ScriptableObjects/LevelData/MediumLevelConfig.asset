@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11a94204e8b524a1492167a9c8feb494, type: 3}
-  m_Name: GameConfig
+  m_Script: {fileID: 11500000, guid: 67eb5eda2f6e5479d813c8a21ea19a07, type: 3}
+  m_Name: MediumLevelConfig
   m_EditorClassIdentifier: 
-  IsPieceCreationAnimated: 0
-  ShouldCreateLevelDynamically: 1
+  boardSize: 5
+  seed: 3
+  pieceCount: 9

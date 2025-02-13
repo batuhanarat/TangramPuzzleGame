@@ -5,25 +5,35 @@ public interface ILevelReader
     public void PrepareNextLevel();
     public Level LoadLevel();
 }
-public class LevelReader : IProvidable, ILevelReader
+public class LocalLevelReader : BaseLevelReader, ILevelReader
 {
-    public int CurrentLevel { get; private set; }
-    private const string LEVEL_KEY = "level";
-    private const int TOTAL_LEVEL_COUNT = 10;
-    public Level LevelData { get; set; }
+    #region  Private Variables
 
-    public LevelReader()
+        private const string LEVEL_KEY = "level";
+        private const int TOTAL_LEVEL_COUNT = 12;
+
+    #endregion
+
+    #region Properties
+
+    public int CurrentLevel { get; private set; }
+
+    #endregion
+
+    public LocalLevelReader() : base()
     {
-        ServiceProvider.Register(this);
         SetCurrentLevel();
     }
+
     private void SetCurrentLevel()
     {
         if(!PlayerPrefs.HasKey(LEVEL_KEY)) {
             CurrentLevel = 1;
             PlayerPrefs.SetInt(LEVEL_KEY, CurrentLevel);
             PlayerPrefs.Save();
-        } else {
+        }
+        else
+        {
             CurrentLevel = PlayerPrefs.GetInt(LEVEL_KEY);
         }
     }
@@ -34,13 +44,13 @@ public class LevelReader : IProvidable, ILevelReader
         PlayerPrefs.Save();
     }
 
-    public void PrepareNextLevel()
+    public override void PrepareNextLevel()
     {
         CurrentLevel = (CurrentLevel + 1) % (TOTAL_LEVEL_COUNT+1);
         PersistLevel();
     }
 
-    public Level LoadLevel()
+    public override Level LoadLevel()
     {
         string levelName = "level_"+CurrentLevel.ToString("D2");
 
@@ -48,7 +58,8 @@ public class LevelReader : IProvidable, ILevelReader
 
         if (levelFile != null)
         {
-            return JsonUtility.FromJson<Level>(levelFile.text);
+            LevelData =  JsonUtility.FromJson<Level>(levelFile.text);
+            return LevelData;
         } else {
             Debug.Log("Level file cant be found");
         }

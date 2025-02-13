@@ -13,10 +13,9 @@ public static class ServiceProvider
     public static Board Board => GetManager<Board>();
     public static IPieceManager PieceManager => GetManager<PieceManager>();
     public static ILevelManager LevelManager => GetManager<LevelManager>();
-    public static ILevelReader LevelReader => GetManager<LevelReader>();
+    public static ILevelReader LevelReader => GetManager<BaseLevelReader>();
     public static ITangramManager TangramManager => GetManager<BaseTangramManager>();
     public static ISpawnManager SpawnManager => GetManager<SpawnManager>();
-    //public static LevelSo Level;
     public static GameConfig GameConfig;
 
 
@@ -25,19 +24,18 @@ public static class ServiceProvider
     public static void InitializeServiceProvider()
     {
 
-        /*
-                if(Level == null) {
-                    Level = Resources.Load<LevelSo>("ScriptableObjects/LevelConfig");
-                }
-        */
 
         GameConfig = Resources.Load<GameConfig>("ScriptableObjects/GameConfig");
 
-
-        //        UnityEngine.Random.InitState(Level.seed);
-
         _ = new Board();
-        _ = new LevelReader();
+
+        if(GameConfig.ShouldCreateLevelDynamically)
+        {
+            _ = new DynamicLevelReader();
+        } else {
+            _ = new LocalLevelReader();
+        }
+
         _ = new LevelManager();
         _ = new SpawnManager();
         _ = new PieceManager();

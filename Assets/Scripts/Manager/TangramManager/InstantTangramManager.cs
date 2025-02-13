@@ -19,7 +19,6 @@ public class InstantTangramManager : BaseTangramManager
             ProcessPieceProgression(piecesInProgress);
             if (!piecesInProgress.Any())
             {
-                //Debug.Log("All pieces are created");
                 break;
             }
         }

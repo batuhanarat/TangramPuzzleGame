@@ -9,8 +9,6 @@ public class GameManager : MonoBehaviour
         private Board board;
         private ITangramManager tangramManager;
         private ILevelManager levelManager;
-
-       // private LevelSo _level;
     #endregion
 
     [Header("Game Settings")]

@@ -29,7 +29,6 @@ public class LevelManager : IProvidable , ILevelManager
         public int Seed { get; private set; }
         public int BoardSize { get; private set; }
 
-
     #endregion
 
     public LevelManager()
@@ -113,7 +112,6 @@ public class LevelManager : IProvidable , ILevelManager
     public void PrepareNextLevel()
     {
         _levelReader.PrepareNextLevel();
-       // level.NextLevel();
         ServiceProvider.BoardRenderer.PlayWinAnimation(
             LoadNextLevel
             );

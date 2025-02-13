@@ -12,6 +12,8 @@ public class AssetLibrary : MonoBehaviour, IProvidable
     [Header("Configs")]
     [SerializeField] private TriangleConfig triangleConfig;
     [SerializeField] private GameColorConfig gameColorConfig;
+    [SerializeField] private LevelConfig levelConfig;
+
 
     private Transform _blocksRoot;
     private Transform _piecesRoot;
@@ -48,6 +50,10 @@ public class AssetLibrary : MonoBehaviour, IProvidable
     public GameColorConfig GetGameColorConfig()
     {
         return gameColorConfig;
+    }
+    public LevelConfig GetLevelConfig()
+    {
+        return levelConfig;
     }
 }
 

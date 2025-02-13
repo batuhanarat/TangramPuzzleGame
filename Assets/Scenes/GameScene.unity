@@ -391,6 +391,7 @@ MonoBehaviour:
   BoardPrefab: {fileID: 6467544339392776382, guid: 96dc98e1912c441a18f2b5a42f28ff58, type: 3}
   triangleConfig: {fileID: 11400000, guid: 07ddfaba0f3fa40bc8cd0511ba036171, type: 2}
   gameColorConfig: {fileID: 11400000, guid: 580792b9921db486cafba522cfe8ac44, type: 2}
+  levelConfig: {fileID: 11400000, guid: f95154b1dbe0d4e3c8212550496b47ec, type: 2}
 --- !u!1 &1637637350
 GameObject:
   m_ObjectHideFlags: 0
