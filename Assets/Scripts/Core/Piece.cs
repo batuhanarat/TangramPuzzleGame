@@ -15,7 +15,7 @@ public class Piece : MonoBehaviour
         private bool _isAnimationPlaying;
         private IPieceManager _pieceManager;
         private Board _board;
-        private static readonly float WAIT_DURATION_AFTER_CAPTURE = 0.2f;
+        private static readonly float WAIT_DURATION_AFTER_CAPTURE = 0.1f;
         private static readonly float BLINK_ANIMATION_DURATION = 0.1f;
 
     #endregion
