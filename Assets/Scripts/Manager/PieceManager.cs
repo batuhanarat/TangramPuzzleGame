@@ -20,18 +20,18 @@ public class PieceManager : IProvidable, IPieceManager
 {
     #region Private Variables
 
-        private List<Piece> activePieces = new();
+        private List<Piece> _activePieces = new();
         private int _placedPieceCounterOnBoard;
-        private ILevelManager levelManager;
-        private ISpawnManager spawnManager;
+        private ILevelManager _levelManager;
+        private ISpawnManager _spawnManager;
 
     #endregion
 
     #region Properties
 
         public int InPlacedSortingOrder { get =>  -1 ;}
-        public int OnDraggedSortingOrder { get =>  activePieces.Count + 1; }
-        private bool IsLevelCompleted { get => _placedPieceCounterOnBoard == activePieces.Count; }
+        public int OnDraggedSortingOrder { get =>  _activePieces.Count + 1; }
+        private bool IsLevelCompleted { get => _placedPieceCounterOnBoard == _activePieces.Count; }
 
     #endregion
 
@@ -39,28 +39,28 @@ public class PieceManager : IProvidable, IPieceManager
     public PieceManager()
     {
         ServiceProvider.Register(this);
-        levelManager = ServiceProvider.LevelManager;
-        spawnManager = ServiceProvider.SpawnManager;
+        _levelManager = ServiceProvider.LevelManager;
+        _spawnManager = ServiceProvider.SpawnManager;
     }
 
     public void AddPiece(Piece piece)
     {
-        activePieces.Add(piece);
+        _activePieces.Add(piece);
     }
 
     public IReadOnlyList<Piece> GetActivePieces()
     {
-        return activePieces.AsReadOnly();
+        return _activePieces.AsReadOnly();
     }
 
     public void ScatterPieces()
     {
-        for(int i = 0 ; i < activePieces.Count ; i++)
+        for(int i = 0 ; i < _activePieces.Count ; i++)
         {
-            var piece = activePieces[i];
+            var piece = _activePieces[i];
 
             var zValues = piece.transform.position.z;
-            Vector3 spawnPoint = spawnManager.GetSpawnPoint();
+            Vector3 spawnPoint = _spawnManager.GetSpawnPoint();
             piece.SetPosition(spawnPoint - piece.InitialPositionOffset);
             piece.transform.position += new Vector3(0,0,zValues);
         }
@@ -68,9 +68,9 @@ public class PieceManager : IProvidable, IPieceManager
 
     public void ArrangeSortingOrders()
     {
-        for (int i = 0; i < activePieces.Count; i++)
+        for (int i = 0; i < _activePieces.Count; i++)
         {
-            activePieces[i].SetSortingOrder(i);
+            _activePieces[i].SetSortingOrder(i);
         }
     }
 
@@ -84,14 +84,14 @@ public class PieceManager : IProvidable, IPieceManager
         _placedPieceCounterOnBoard++;
         if(IsLevelCompleted)
         {
-            levelManager.PrepareNextLevel();
+            _levelManager.PrepareNextLevel();
             Debug.Log(" Level Won !");
         }
     }
 
     public void Reset()
     {
-        activePieces.Clear();
+        _activePieces.Clear();
         _placedPieceCounterOnBoard = 0;
     }
 

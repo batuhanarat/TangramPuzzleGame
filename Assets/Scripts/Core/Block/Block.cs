@@ -6,48 +6,42 @@ public class Block
 {
     #region Private Variables
 
-        private readonly int x;
-        private readonly int y;
-        private readonly Vector2Int coordinates;
-        private readonly Dictionary<TriangleType, bool> triangleOccupancy;
-        private readonly Dictionary<TriangleType, Triangle> triangles;
-        private readonly float cellSize;
-        private readonly Board board;
+        private readonly int _x;
+        private readonly int _y;
+        private readonly Vector2Int _coordinates;
+        private readonly Dictionary<TriangleType, bool> _triangleOccupancy;
+        private readonly Dictionary<TriangleType, Triangle> _triangles;
+        private readonly float _cellSize;
+        private readonly Board _board;
 
     #endregion
 
     #region Properties
 
         public Vector3 Position { get; }
-        public Vector2Int Coordinates => coordinates;
+        public Vector2Int Coordinates => _coordinates;
 
 
-        public Triangle UpperTriangle => triangles[TriangleType.UP];
-        public Triangle LowerTriangle => triangles[TriangleType.DOWN];
-        public Triangle RightTriangle => triangles[TriangleType.RIGHT];
-        public Triangle LeftTriangle => triangles[TriangleType.LEFT];
-
-
-        public bool IsLeftTriangleOccupied => triangleOccupancy[TriangleType.LEFT];
-        public bool IsRightTriangleOccupied => triangleOccupancy[TriangleType.RIGHT];
-        public bool IsUpperTriangleOccupied => triangleOccupancy[TriangleType.UP];
-        public bool IsLowerTriangleOccupied => triangleOccupancy[TriangleType.DOWN];
+        public Triangle UpperTriangle => _triangles[TriangleType.UP];
+        public Triangle LowerTriangle => _triangles[TriangleType.DOWN];
+        public Triangle RightTriangle => _triangles[TriangleType.RIGHT];
+        public Triangle LeftTriangle => _triangles[TriangleType.LEFT];
 
     #endregion
 
     public Block(int x, int y, Vector3 boardCenter, float cellSize, int gridSize)
     {
-        board = ServiceProvider.Board;
+        _board = ServiceProvider.Board;
 
-        this.x = x;
-        this.y = y;
-        coordinates = new Vector2Int(x, y);
-        this.cellSize = cellSize;
+        this._x = x;
+        this._y = y;
+        _coordinates = new Vector2Int(x, y);
+        this._cellSize = cellSize;
 
         Position = CalculateWorldPosition(boardCenter, gridSize);
         Render(Position, cellSize);
-        triangleOccupancy = InitializeTriangleOccupancy();
-        triangles = InitializeTriangles();
+        _triangleOccupancy = InitializeTriangleOccupancy();
+        _triangles = InitializeTriangles();
     }
 
     private void Render(Vector3 position, float cellSize)
@@ -59,19 +53,19 @@ public class Block
     public void RemoveFromBlock(Triangle triangle)
     {
         if (triangle == null) return;
-        triangleOccupancy[triangle.TriangleType] = false;
+        _triangleOccupancy[triangle.TriangleType] = false;
     }
 
     public void OccupyTriangleInBlock(Triangle triangle)
     {
         if (triangle == null) return;
-        triangleOccupancy[triangle.TriangleType] = true;
+        _triangleOccupancy[triangle.TriangleType] = true;
     }
 
     public bool CheckCanAddToBlock(Triangle triangle)
     {
         if (triangle == null) return false;
-        return !triangleOccupancy[triangle.TriangleType];
+        return !_triangleOccupancy[triangle.TriangleType];
     }
 
     public void InitBlock()
@@ -80,16 +74,16 @@ public class Block
         {
             var triangleType = (TriangleType)type;
             var (left, right, opposite) = GetNeighborsForType(triangleType);
-            triangles[triangleType].SetNeighbors(left, right, opposite);
+            _triangles[triangleType].SetNeighbors(left, right, opposite);
         }
     }
 
     private Vector3 CalculateWorldPosition(Vector3 boardCenter, int gridSize)
     {
-        float offset = cellSize * (gridSize - 1) / 2f;
+        float offset = _cellSize * (gridSize - 1) / 2f;
         return boardCenter + new Vector3(
-            (x * cellSize) - offset,
-            (y * cellSize) - offset,
+            (_x * _cellSize) - offset,
+            (_y * _cellSize) - offset,
             0f
         );
     }
@@ -125,12 +119,12 @@ public class Block
         Triangle triangle = ServiceProvider.TriangleFactory.CreateTriangle(type, Position);
 
         SpriteRenderer sr = triangle.GetComponent<SpriteRenderer>();
-        float scale = cellSize / sr.sprite.bounds.size.x;
+        float scale = _cellSize / sr.sprite.bounds.size.x;
         triangle.transform.localScale = new Vector3(scale, scale, 1f);
 
-        triangle.Init(x, y);
+        triangle.Init(_x, _y);
 
-        board.AddToAvailableTriangles(triangle);
+        _board.AddToAvailableTriangles(triangle);
         return triangle;
     }
 
@@ -150,10 +144,10 @@ public class Block
     {
         var neighborBlock = type switch
         {
-            TriangleType.UP => board.GetUpperBlock(x, y),
-            TriangleType.DOWN => board.GetBellowBlock(x, y),
-            TriangleType.RIGHT => board.GetRightBlock(x, y),
-            TriangleType.LEFT => board.GetLeftBlock(x, y),
+            TriangleType.UP => _board.GetUpperBlock(_x, _y),
+            TriangleType.DOWN => _board.GetBellowBlock(_x, _y),
+            TriangleType.RIGHT => _board.GetRightBlock(_x, _y),
+            TriangleType.LEFT => _board.GetLeftBlock(_x, _y),
             _ => throw new ArgumentException($"Invalid triangle type: {type}")
         };
 

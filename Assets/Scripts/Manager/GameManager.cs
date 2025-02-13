@@ -5,41 +5,41 @@ public class GameManager : MonoBehaviour
 
     #region Private Variables
 
-        private BoardRenderer boardRenderer;
-        private Board board;
-        private ITangramManager tangramManager;
-        private ILevelManager levelManager;
+        private BoardRenderer _boardRenderer;
+        private Board _board;
+        private ITangramManager _tangramManager;
+        private ILevelManager _levelManager;
+
     #endregion
 
     [Header("Game Settings")]
     [SerializeField] private GameConfig gameConfig;
 
 
-
     private void Awake()
     {
-        board = ServiceProvider.Board;
-        tangramManager = ServiceProvider.TangramManager;
-        levelManager = ServiceProvider.LevelManager;
+        _board = ServiceProvider.Board;
+        _tangramManager = ServiceProvider.TangramManager;
+        _levelManager = ServiceProvider.LevelManager;
     }
 
     private void Start()
     {
-        boardRenderer = ServiceProvider.AssetLibrary.GetAsset<BoardRenderer>(AssetType.Board);
+        _boardRenderer = ServiceProvider.AssetLibrary.GetAsset<BoardRenderer>(AssetType.Board);
         SetupGame();
         StartGame();
     }
 
     private void SetupGame()
     {
-        levelManager.SetupLevel();
-        Random.InitState(levelManager.Seed);
+        _levelManager.SetupLevel();
+        Random.InitState(_levelManager.Seed);
     }
 
     public void StartGame()
     {
-        board.Initialize(levelManager.BoardSize, levelManager.BoardSize);
-        tangramManager.CreateTangram(levelManager.PieceCount);
+        _board.Initialize(_levelManager.BoardSize, _levelManager.BoardSize);
+        _tangramManager.CreateTangram(_levelManager.PieceCount);
     }
 
 

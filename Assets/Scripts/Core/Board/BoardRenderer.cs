@@ -12,9 +12,9 @@ public class BoardRenderer : MonoBehaviour, IProvidable
     #region Private Variable
 
         private int _gridSize;
-        private float widthPercentage = 0.8f;
-        private float heightPercentage = 0.4f;
-        private float topOffsetPercentage = 0.1f;
+        private float _widthPercentage = 0.8f;
+        private float _heightPercentage = 0.4f;
+        private float _topOffsetPercentage = 0.1f;
         private Vector3 _scaleAdjusted;
         private Block[,] _blocks;
 
@@ -47,11 +47,11 @@ public class BoardRenderer : MonoBehaviour, IProvidable
         float screenHeight = 2f * mainCamera.orthographicSize;
         float screenWidth = screenHeight * mainCamera.aspect;
 
-        float boardWidth = screenWidth * widthPercentage;
-        float boardHeight = screenHeight * heightPercentage;
+        float boardWidth = screenWidth * _widthPercentage;
+        float boardHeight = screenHeight * _heightPercentage;
         float boardSize = Mathf.Min(boardWidth, boardHeight);
 
-        float topOffset = screenHeight * topOffsetPercentage;
+        float topOffset = screenHeight * _topOffsetPercentage;
         float boardTopEdgeY = mainCamera.orthographicSize - topOffset;
         BoardCenter = new Vector3(0f, boardTopEdgeY - (boardSize / 2f), 0f);
 

@@ -5,7 +5,7 @@ public class TriangleFactory :  IProvidable
 {
     #region Private Variables
 
-        private TriangleConfig triangleConfig;
+        private TriangleConfig _triangleConfig;
 
     #endregion
 

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class AnimatedTangramManager : BaseTangramManager
 {
+    #region Private Variables
+
+        private const float WAIT_DURATION_AFTER_ALL_PIECES_INITIALIZED = 1f;
+
+    #endregion
     public override void CreateTangram(int pieceCount)
     {
         CreateInitialPieces(pieceCount);
@@ -33,7 +38,7 @@ public class AnimatedTangramManager : BaseTangramManager
                 }
             }
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(WAIT_DURATION_AFTER_ALL_PIECES_INITIALIZED);
 
         OnPiecesCreated();
         Debug.Log("All pieces are created");

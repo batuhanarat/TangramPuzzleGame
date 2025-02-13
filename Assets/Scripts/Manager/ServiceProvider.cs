@@ -58,7 +58,7 @@ public static class ServiceProvider
 
     private static ITangramManager CreateTangramManagerInstance()
     {
-        return GameConfig.IsPieceCreationAnimated
+        return GameConfig.ShouldAnimatePieceCreation
             ? new AnimatedTangramManager()
             : new InstantTangramManager();
     }

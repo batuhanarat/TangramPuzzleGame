@@ -5,10 +5,10 @@ public class Board : IProvidable
 
     #region Private Variables
 
-        private Block[,] blocks;
+        private Block[,] _blocks;
         private int _columns;
         private int _rows;
-        private readonly List<Triangle> availableTriangles = new();
+        private readonly List<Triangle> _availableTriangles = new();
 
     #endregion
 
@@ -19,18 +19,18 @@ public class Board : IProvidable
 
     public void AddToAvailableTriangles(Triangle triangle)
     {
-        availableTriangles.Add(triangle);
+        _availableTriangles.Add(triangle);
     }
 
     public void RemoveFromAvailableTriangels(Triangle triangle)
     {
-        availableTriangles.Remove(triangle);
+        _availableTriangles.Remove(triangle);
     }
 
     public Triangle GetRandomTriangle()
     {
-        var randomIndex = UnityEngine.Random.Range(0,availableTriangles.Count);
-        return availableTriangles[randomIndex];
+        var randomIndex = UnityEngine.Random.Range(0,_availableTriangles.Count);
+        return _availableTriangles[randomIndex];
     }
 
     public void Initialize(int columns, int rows)
@@ -43,14 +43,14 @@ public class Board : IProvidable
     {
         _columns = columns;
         _rows = rows;
-        blocks = new Block[columns, rows];
+        _blocks = new Block[columns, rows];
 
-        ServiceProvider.BoardRenderer.AdjustBoard(columns, rows, blocks);
+        ServiceProvider.BoardRenderer.AdjustBoard(columns, rows, _blocks);
     }
 
     private void InitializeBlocks()
     {
-        foreach (var block in blocks)
+        foreach (var block in _blocks)
         {
             block?.InitBlock();
         }
@@ -58,35 +58,35 @@ public class Board : IProvidable
 
     public void Reset()
     {
-        availableTriangles.Clear();
+        _availableTriangles.Clear();
     }
 
     public Block GetRightBlock(int x, int y)
     {
         if( x+1 >= _columns) return null;
 
-        return blocks[x+1,y];
+        return _blocks[x+1,y];
     }
 
     public Block GetLeftBlock(int x, int y)
     {
         if( x-1 < 0) return null;
 
-        return blocks[x-1,y];
+        return _blocks[x-1,y];
     }
 
     public Block GetUpperBlock(int x, int y)
     {
         if( y+1 >= _rows) return null;
 
-        return blocks[x,y+1];
+        return _blocks[x,y+1];
     }
 
     public Block GetBellowBlock(int x, int y)
     {
         if( y-1 < 0) return null;
 
-        return blocks[x,y-1];
+        return _blocks[x,y-1];
     }
 
 }
