@@ -15,6 +15,9 @@ public class Piece : MonoBehaviour
         private bool _isAnimationPlaying;
         private IPieceManager _pieceManager;
         private Board _board;
+        private static readonly float WAIT_DURATION_AFTER_CAPTURE = 0.2f;
+        private static readonly float BLINK_ANIMATION_DURATION = 0.1f;
+
     #endregion
 
     #region Properties
@@ -93,7 +96,6 @@ public class Piece : MonoBehaviour
         _pieceManager.OnPieceRemoved();
     }
 
-
     private bool TryPlace()
     {
         foreach(var triangle in _unitTriangles)
@@ -171,7 +173,7 @@ public class Piece : MonoBehaviour
         {
             yield  break;
         }
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(WAIT_DURATION_AFTER_CAPTURE);
         Capture();
         yield return true;
     }
@@ -182,14 +184,14 @@ public class Piece : MonoBehaviour
         var triangletoCapture = _moveableTriangles[index];
 
         _unitTriangles.Add(triangletoCapture);
-        triangletoCapture.ChangeColor(_pieceColor,this);
+        triangletoCapture.OccupyTriangle(_pieceColor,this);
         _board.RemoveFromAvailableTriangels(triangletoCapture);
+
         if (triangletoCapture.transform != null && this.transform != null)
         {
             triangletoCapture.transform.parent = this.transform;
         }
     }
-
 
     public void SetSortingOrder(int order)
     {
@@ -216,7 +218,7 @@ public class Piece : MonoBehaviour
             Color transparentColor = new(originalColor.r, originalColor.g, originalColor.b, 0f);
 
             sequence.Join(
-                spriteRenderer.DOColor(transparentColor, 0.1f)
+                spriteRenderer.DOColor(transparentColor, BLINK_ANIMATION_DURATION)
                     .SetEase(Ease.InOutQuad)
                     .SetLoops(2, LoopType.Yoyo)
             );

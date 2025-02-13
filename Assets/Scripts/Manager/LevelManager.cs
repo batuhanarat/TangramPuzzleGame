@@ -119,7 +119,7 @@ public class LevelManager : IProvidable , ILevelManager
 
     private void LoadNextLevel()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(Constants.SceneName);
     }
 
 }

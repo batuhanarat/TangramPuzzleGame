@@ -5,11 +5,11 @@ public class Triangle : MonoBehaviour
 {
     #region Private Variables
 
-        public TriangleType TriangleType { get => triangleType; }
         private List<Triangle> _neighbors = new();
-        private Vector2Int coordinates;
-        private Block blockToPlace;
+        private Vector2Int _coordinates;
+        private Block _blockToPlace;
         private bool _isOccupied = false;
+        private Piece _piece;
 
     #endregion
 
@@ -17,12 +17,12 @@ public class Triangle : MonoBehaviour
 
         [SerializeField] private TriangleType triangleType;
         [SerializeField] private SpriteRenderer TriangleRenderer;
-        [SerializeField] private Piece _piece;
 
     #endregion
 
     #region Properties
 
+        public TriangleType TriangleType { get => triangleType; }
         public int InitialSortingOrder { get; set; }
         public bool IsAvailableToCapture  => !_isOccupied ;
 
@@ -30,12 +30,12 @@ public class Triangle : MonoBehaviour
 
     public void Init(int x, int y)
     {
-        coordinates = new Vector2Int(x,y);
+        _coordinates = new Vector2Int(x,y);
     }
 
     public void ExtractFromBoard()
     {
-        blockToPlace.RemoveFromBlock(this);
+        _blockToPlace.RemoveFromBlock(this);
     }
 
     public void SetInitialSortingOrder()
@@ -52,7 +52,7 @@ public class Triangle : MonoBehaviour
 
         if (block.CheckCanAddToBlock(this) )
         {
-            blockToPlace = block;
+            _blockToPlace = block;
 
             return true;
         }
@@ -62,14 +62,14 @@ public class Triangle : MonoBehaviour
 
     public void PlaceToBlock()
     {
-        if(blockToPlace != null)
+        if(_blockToPlace != null)
         {
-            transform.position = blockToPlace.Position;
-            blockToPlace.OccupyTriangleInBlock(this);
+            transform.position = _blockToPlace.Position;
+            _blockToPlace.OccupyTriangleInBlock(this);
         }
     }
 
-    public void ChangeColor(Color color, Piece piece)
+    public void OccupyTriangle(Color color, Piece piece)
     {
         _isOccupied = true;
         _piece = piece;
